@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 tokio-rustls = {version = "0.12.1"}
+async-std = {version="1.9"}
