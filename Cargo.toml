@@ -10,3 +10,9 @@ edition = "2018"
 tokio-rustls = {version = "0.12.1"}
 async-std = {version="1.9"}
 quickcheck = "1"
+proptest = "1.0.0"
+dangerous="0.9"
+semval="0.1.7"
+
+[target.'cfg(loom)'.dependencies]
+loom = "0.4"

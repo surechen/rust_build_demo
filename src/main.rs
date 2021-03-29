@@ -20,14 +20,48 @@ mod tests {
     }
 }
 
+fn parse_date(s: &str) -> Option<(u32, u32, u32)> {
+    if 10 != s.len() { return None; }
+    if "-" != &s[4..5] || "-" != &s[7..8] { return None; }
+
+    let year = &s[0..4];
+    let month = &s[6..7];
+    let day = &s[8..10];
+
+    year.parse::<u32>().ok().and_then(
+        |y| month.parse::<u32>().ok().and_then(
+            |m| day.parse::<u32>().ok().map(
+                |d| (y, m, d))))
+}
+
+//proptest
+use proptest::prelude::*;
+
+proptest! {
+    #[test]
+    fn doesnt_crash(s in "\\PC*") {
+        parse_date(&s);
+    }
+}
+
+
+
 fn main() {
     println!("Hello, world!");
     let mut n: i32 = 64;
     let p1 = &n as *const i32;
     let p2 = &mut n as *mut i32;
-
     unsafe {
         println!("r1 is: {}", *p1);
         println!("r2 is: {}", *p2);
     }
+
+    use dangerous::*;
+    let input = dangerous::input(b"hello");
+    let result: Result<_, Invalid> = input.read_partial(|r| {
+        r.read_u8()
+    });
+    assert_eq!(result, Ok((b'h', dangerous::input(b"ello"))));
 }
+
+
