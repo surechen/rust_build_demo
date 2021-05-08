@@ -3,7 +3,7 @@
 extern crate quickcheck;
 
 fn reverse<T: Clone>(xs: &[T]) -> Vec<T> {
-    let mut rev = vec!();
+    let mut rev = vec![];
     for x in xs.iter() {
         rev.insert(0, x.clone())
     }
@@ -21,17 +21,23 @@ mod tests {
 }
 
 fn parse_date(s: &str) -> Option<(u32, u32, u32)> {
-    if 10 != s.len() { return None; }
-    if "-" != &s[4..5] || "-" != &s[7..8] { return None; }
+    if 10 != s.len() {
+        return None;
+    }
+    if "-" != &s[4..5] || "-" != &s[7..8] {
+        return None;
+    }
 
     let year = &s[0..4];
     let month = &s[6..7];
     let day = &s[8..10];
 
-    year.parse::<u32>().ok().and_then(
-        |y| month.parse::<u32>().ok().and_then(
-            |m| day.parse::<u32>().ok().map(
-                |d| (y, m, d))))
+    year.parse::<u32>().ok().and_then(|y| {
+        month
+            .parse::<u32>()
+            .ok()
+            .and_then(|m| day.parse::<u32>().ok().map(|d| (y, m, d)))
+    })
 }
 
 //proptest
@@ -44,7 +50,10 @@ proptest! {
     }
 }
 
-
+fn sanitizer() {
+    let x = vec![1, 2, 3, 4];
+    let _y = unsafe { *x.as_ptr().offset(6) };
+}
 
 fn main() {
     println!("Hello, world!");
@@ -58,10 +67,8 @@ fn main() {
 
     use dangerous::*;
     let input = dangerous::input(b"hello");
-    let result: Result<_, Invalid> = input.read_partial(|r| {
-        r.read_u8()
-    });
+    let result: Result<_, Invalid> = input.read_partial(|r| r.read_u8());
     assert_eq!(result, Ok((b'h', dangerous::input(b"ello"))));
+
+    sanitizer();
 }
-
-
