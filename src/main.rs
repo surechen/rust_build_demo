@@ -71,4 +71,6 @@ fn main() {
     assert_eq!(result, Ok((b'h', dangerous::input(b"ello"))));
 
     sanitizer();
+    reverse(&vec![1, 2, 3]);
+    parse_date("2021-02-02");
 }
