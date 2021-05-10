@@ -1,5 +1,4 @@
 #[allow(dead_code)]
-
 #[cfg(test)]
 #[cfg_attr(test, macro_use)]
 extern crate quickcheck;
@@ -32,6 +31,7 @@ mod tests {
     }
 }
 
+#[allow(dead_code)]
 fn parse_date(s: &str) -> Option<(u32, u32, u32)> {
     if 10 != s.len() {
         return None;
