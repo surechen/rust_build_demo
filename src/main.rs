@@ -1,5 +1,7 @@
+#[allow(dead_code)]
+
 #[cfg(test)]
-#[macro_use]
+#[cfg_attr(test, macro_use)]
 extern crate quickcheck;
 
 #[cfg(test)]
@@ -19,6 +21,7 @@ mod tests {
     }
 
     //proptest
+    //使用proptest工具测试，这里会发现错误
     use crate::parse_date;
     use proptest::prelude::*;
     proptest! {
@@ -70,6 +73,6 @@ fn main() {
     let result: Result<_, Invalid> = input.read_partial(|r| r.read_u8());
     assert_eq!(result, Ok((b'h', dangerous::input(b"ello"))));
 
+    // 使用编译器内置的快速内存错误检测功能
     sanitizer();
-    parse_date("2021-02-02");
 }
