@@ -95,6 +95,9 @@ cargo outdated || true
 #cargo deadlinks
 #cargo deadlinks --check-http
 
+#检查损坏的链接
+#cargo install mlc
+#mlc
 
 ####################################动态检查####################################
 
@@ -211,5 +214,18 @@ cargo test || true
 #[level](https://github.com/sunng87/cargo-release/blob/master/docs/reference.md)
 #cargo release [level]
 
+#创建crate的rpm版本
+#目前有问题： error: rpmbuild error: error running rpmbuild: No such file or directory (os error 2)
+#cargo rpm init
+#cargo rpm build
 
+#执行rs脚本
+#cargo install cargo-script
+#cargo script ./toolsbox/cargo-script/helloworld.rs
 
+#文档生成
+#rustdoc
+
+#根据.h头文件生成bingding文件
+#cargo install bindgen
+#bindgen ./toolsbox/bindgen/input.h -o bindings.rs
