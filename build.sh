@@ -90,6 +90,10 @@ cargo license
 cargo install cargo-outdated || true
 cargo outdated || true 
 
+#cargo doc中损坏的链接检查
+#cargo install cargo-deadlinks
+#cargo deadlinks
+#cargo deadlinks --check-http
 
 
 ####################################动态检查####################################
@@ -123,11 +127,18 @@ cargo kcov
 #fuzzcheck模糊测试
 #cargo +nightly install cargo-fuzzcheck
 
-#fuzz
+#fuzz测试
 #cargo install cargo-fuzz
 #cargo fuzz init
 #cargo fuzz add build_demo
 #cargo fuzz run build_demo
+
+#性能检测
+#cargo install cargo-benchcmp
+#cargo bench > 1.txt
+#运用修改
+#cargo bench > 2.txt
+#cargo benchcmp 1.txt 2.txt
 
 #代码中已包含proptest和quickcheck
 #测试
@@ -177,7 +188,28 @@ cargo test || true
 #cargo profiler callgrind
 #cargo profiler cachegrind --release
 
+#一行执行多个命令
+#cargo install cargo-do
+#cargo do clean, update, build
 
+#从cargo项目创建Debian packages
+#cargo install cargo-deb
+#cargo deb
+
+#以已有的git项目作为模板创建一个crate
+#cargo install cargo-generate
+#cargo generate --git https://github.com/HPCWorkspace/rust_build_demo.git -name rust_build_demo_test
+
+#一条命令操作多个crates
+#cargo install cargo-multi
+#cargo multi update
+#cargo multi build
+#cargo multi test
+
+#发布新版本
+#cargo install cargo-release
+#[level](https://github.com/sunng87/cargo-release/blob/master/docs/reference.md)
+#cargo release [level]
 
 
 
