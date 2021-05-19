@@ -5,8 +5,6 @@ mod toolsbox;
 #[cfg_attr(test, macro_use)]
 extern crate quickcheck;
 
-use toolsbox::*;
-
 // #[cfg(test)]
 // mod tests {
 //     fn reverse<T: Clone>(xs: &[T]) -> Vec<T> {

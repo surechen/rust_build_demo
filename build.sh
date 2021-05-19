@@ -143,6 +143,10 @@ cargo kcov
 #cargo bench > 2.txt
 #cargo benchcmp 1.txt 2.txt
 
+#mock测试
+#mockall
+#mockiato
+
 #代码中已包含proptest和quickcheck
 #测试
 cargo test || true
