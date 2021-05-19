@@ -6,11 +6,13 @@ edition = "2018"
 license = "MIT"
 readme = "README.md"
 description = ""
+default-run = "rust_build_demo1"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 dangerous="0.9"
+honggfuzz = "0.5"
 #tokio-rustls = {version = "0.12.1"}
 #async-std = {version="1.9"}
 #semval="0.1.7"
@@ -27,3 +29,7 @@ criterion = "0.3"
 [[bench]]
 name = "my_benchmark"
 harness = false
+
+[[bin]]
+name = "honggfuzz"
+path = "src/toolsbox/toolhonggfuzz/toolhonggfuzz.rs"

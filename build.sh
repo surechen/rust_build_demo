@@ -131,10 +131,15 @@ cargo kcov
 #cargo +nightly install cargo-fuzzcheck
 
 #fuzz测试
+#cargo-fuzz模糊测试
 #cargo install cargo-fuzz
 #cargo fuzz init
 #cargo fuzz add build_demo
 #cargo fuzz run build_demo
+#honggfuzz模糊测试
+#apt install build-essential binutils-dev libunwind-dev libblocksruntime-dev liblzma-dev
+#cargo install honggfuzz
+
 
 #性能检测
 #cargo install cargo-benchcmp
@@ -149,6 +154,9 @@ cargo kcov
 
 #benchmark
 #criterion.rs
+
+#honggfuzz
+#cargo hfuzz run honggfuzz
 
 #代码中已包含proptest和quickcheck
 #测试
