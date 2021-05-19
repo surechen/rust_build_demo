@@ -1,13 +1,13 @@
 #测试项目: https://github.com/HPCWorkspace/rust_build_demo/
 #环境准备
-#代理设置，根据实际情况使用
+#代理设置，根据实际情况判断是否使用
 # export http_proxy="socks5://127.0.0.1:1080"
 # export https_proxy="socks5://127.0.0.1:1080"
 #安装rustup
 # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 #更新rustup
 # rustup update nightly && rustup default nightly
-# 安装rustc-dev，包含hir ast解析的一些crate
+# 安装rustc-dev，包含hir和ast解析相关的crate
 #rustup component add rustc-dev
 
 
@@ -139,7 +139,6 @@ cargo kcov
 #honggfuzz模糊测试
 #apt install build-essential binutils-dev libunwind-dev libblocksruntime-dev liblzma-dev
 #cargo install honggfuzz
-
 
 #性能检测
 #cargo install cargo-benchcmp

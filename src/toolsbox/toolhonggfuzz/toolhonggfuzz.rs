@@ -15,10 +15,18 @@ fn main() {
         // Here, this slice will contain a "random" quantity of "random" data.
         fuzz!(|data: &[u8]| {
             some_global_state += 1;
-            if data.len() != 3 {return}
-            if data[0] != b'h' {return}
-            if data[1] != b'e' {return}
-            if data[2] != b'y' {return}
+            if data.len() != 3 {
+                return;
+            }
+            if data[0] != b'h' {
+                return;
+            }
+            if data[1] != b'e' {
+                return;
+            }
+            if data[2] != b'y' {
+                return;
+            }
             panic!("BOOM")
         });
     }
