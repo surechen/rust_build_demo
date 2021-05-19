@@ -22,3 +22,8 @@ quickcheck = "1"
 proptest = "1.0.0"
 mockiato ="0.9.5"
 mockall = "0.9.1"
+criterion = "0.3"
+
+[[bench]]
+name = "my_benchmark"
+harness = false
