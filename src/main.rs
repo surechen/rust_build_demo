@@ -1,7 +1,11 @@
+mod toolsbox;
+
 #[allow(dead_code)]
 #[cfg(test)]
 #[cfg_attr(test, macro_use)]
 extern crate quickcheck;
+
+use toolsbox::*;
 
 // #[cfg(test)]
 // mod tests {

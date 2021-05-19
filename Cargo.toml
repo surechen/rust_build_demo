@@ -11,6 +11,7 @@ description = ""
 
 [dependencies]
 dangerous="0.9"
+mockiato="0.9.5"
 #tokio-rustls = {version = "0.12.1"}
 #async-std = {version="1.9"}
 #semval="0.1.7"
