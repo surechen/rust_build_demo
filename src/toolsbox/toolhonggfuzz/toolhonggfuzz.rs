@@ -1,5 +1,7 @@
+#[cfg(target_os = "linux")]
 use honggfuzz::fuzz;
 
+#[cfg(target_os = "linux")]
 fn main() {
     // Here you can parse `std::env::args and
     // setup / initialize your project

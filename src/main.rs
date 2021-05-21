@@ -1,8 +1,12 @@
+#![deny(clippy::all)]
+#![warn(clippy::all)]
+#![allow(clippy::all)]
+
 mod toolsbox;
 
 #[allow(dead_code)]
 #[cfg(test)]
-#[cfg_attr(test, macro_use)]
+//#[cfg_attr(test, macro_use)]
 extern crate quickcheck;
 
 // #[cfg(test)]

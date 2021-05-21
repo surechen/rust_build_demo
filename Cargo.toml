@@ -12,6 +12,7 @@ default-run = "rust_build_demo1"
 
 [dependencies]
 dangerous="0.9"
+[target.'cfg(target_os = "linux")'.dependencies]
 honggfuzz = "0.5"
 #tokio-rustls = {version = "0.12.1"}
 #async-std = {version="1.9"}

@@ -1,5 +1,6 @@
+#[allow(dead_code)]
 #[cfg(test)]
-use mockall::{automock, mock, predicate::*};
+use mockall::{automock, predicate::*};
 #[cfg_attr(test, automock)]
 trait MyTrait {
     fn foo(&self, x: u32) -> u32;
