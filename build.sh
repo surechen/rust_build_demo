@@ -16,7 +16,7 @@
 #cargo supply-chain publishers
 
 #统计项目使用到的crates的unsafe代码片段信息
-cargo install --locked  cargo-geiger
+cargo install --locked cargo-geiger
 cargo geiger || true
 
 #跟踪和查询crates依存关系图
@@ -151,6 +151,8 @@ cargo kcov
 
 #代码中已包含proptest和quickcheck
 #测试
+unset RUSTFLAGS
+unset RUSTDOCFLAGS
 cargo test || true
 ##############################################################################
 
@@ -165,17 +167,17 @@ cargo test || true
 #cargo miri test
 
 #宏展开工具
-#cargo install cargo-expand
-#cargo expand
+cargo install cargo-expand
+cargo expand --bin rust_build_demo1
 
 #解开Rust语法糖，查看编译器对代码做了什么
 #需要使用nightly
 #rustup install nightly
 #rustup component add rustfmt
-#cargo install cargo-inspect
-#cargo inspect
+cargo install cargo-inspect
+cargo inspect
 
-#更新以来的crate
+#更新依赖的crate
 #cargo install cargo-update
 #cargo update
 

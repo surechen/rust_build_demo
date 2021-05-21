@@ -34,3 +34,4 @@ harness = false
 [[bin]]
 name = "honggfuzz"
 path = "src/toolsbox/toolhonggfuzz/toolhonggfuzz.rs"
+
