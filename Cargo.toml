@@ -21,15 +21,15 @@ honggfuzz = "0.5"
 #[target.'cfg(loom)'.dependencies]
 #loom = "0.4"
 [dev-dependencies]
-quickcheck = "1"
-proptest = "1.0.0"
-mockiato ="0.9.5"
-mockall = "0.9.1"
 criterion = "0.3"
+mockall = "0.9.1"
+mockiato ="0.9.5"
+proptest = "1.0.0"
+quickcheck = "1"
 
 [[bench]]
-name = "my_benchmark"
 harness = false
+name = "my_benchmark"
 
 [[bin]]
 name = "honggfuzz"

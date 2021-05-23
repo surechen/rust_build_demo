@@ -6,6 +6,7 @@
 # rustup update nightly && rustup default nightly
 # 安装rustc-dev，包含hir和ast解析相关的crate
 #rustup component add rustc-dev rust-src
+
 ##############################################################################
 
 ####################################依赖检查####################################
@@ -105,16 +106,22 @@ cargo build
 #sanitizer快速内存错误检测器，能够检测unsafe部分
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 #编译并执行
-cargo run || true 
+cargo run || true
+unset RUSTFLAGS
+unset RUSTDOCFLAGS
 ##############################################################################
 
 #####################################测试#####################################
 
 #测试检查
+
+
+
+#代码覆盖率检查
+#cargo-tarpaulin 只支持x86上的linux系统
 cargo install cargo-tarpaulin
 cargo tarpaulin --all  --all-features || true
 
-#代码覆盖率检查
 #cargo install cargo-kcov || true
 #sudo apt-get install cmake g++ pkg-config jq libssl-dev
 #sudo apt-get install libcurl4-openssl-dev libelf-dev libdw-dev binutils-dev libiberty-dev
@@ -126,23 +133,23 @@ cargo kcov
 
 #fuzz测试
 #cargo-fuzz模糊测试
-#cargo install cargo-fuzz
+cargo install cargo-fuzz
 #cargo fuzz init
 #cargo fuzz add build_demo
-#cargo fuzz run build_demo
+cargo fuzz run build_demo || true
 #honggfuzz模糊测试
 #apt install build-essential binutils-dev libunwind-dev libblocksruntime-dev liblzma-dev
 #cargo install honggfuzz
 #cargo hfuzz run honggfuzz
 
 #性能检测
-#cargo install cargo-benchcmp
-#cargo bench > 1.txt
+cargo install cargo-benchcmp
+cargo bench > 1.txt
 #运用修改
-#cargo bench > 2.txt
-#cargo benchcmp 1.txt 2.txt
+cargo bench > 2.txt
+cargo benchcmp 1.txt 2.txt
 
-#mock测试
+#mock测试，已添加代码，可直接使用cargo test执行
 #mockall
 #mockiato
 
@@ -151,8 +158,6 @@ cargo kcov
 
 #代码中已包含proptest和quickcheck
 #测试
-unset RUSTFLAGS
-unset RUSTDOCFLAGS
 cargo test || true
 ##############################################################################
 
@@ -185,19 +190,19 @@ cargo inspect
 #cargo cache
 
 #格式化Cargo.toml
-#cargo install cargo-tomlfmt
-#cargo tomlfmt
+cargo install cargo-tomlfmt
+cargo tomlfmt
 
 #打印Rust代码的汇编或LLVM IR
-#cargo install cargo-asm
-#cargo asm
+cargo install cargo-asm
+cargo asm
 
 #程序画像，根据函数调用和cache访问的信息，分析问题
 #只限于linux
-#sudo apt-get install valgrind
-#cargo install cargo-profiler
-#cargo profiler callgrind
-#cargo profiler cachegrind --release
+sudo apt-get install valgrind
+cargo install cargo-profiler
+cargo profiler callgrind
+cargo profiler cachegrind --release
 
 #一行执行多个命令
 #cargo install cargo-do
