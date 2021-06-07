@@ -1,6 +1,6 @@
-#![deny(clippy::all)]
-#![warn(clippy::all)]
-#![allow(clippy::all)]
+//#![deny(clippy::all)]
+//#![warn(clippy::all)]
+//#![allow(clippy::all)]
 
 mod toolsbox;
 
@@ -64,6 +64,34 @@ fn parse_date(s: &str) -> Option<(u32, u32, u32)> {
 //     println!("{}", _y)
 // }
 
+fn clippycheck() {
+    let vec: Vec<isize> = Vec::new();
+    if vec.len() <= 0 {}
+    if 100 > i32::MAX {}
+
+
+    let mut a = 1;
+    let mut b = 2;
+    a = b;
+    b = a;
+
+
+    let x = 3.14;
+    let y = 1_f64 / x;
+
+
+    let a: u32 = 12;
+    f(a as u16);
+
+
+    assert!(false);
+    assert!(true);
+    const B: bool = false;
+    assert!(B)
+}
+
+fn f(a: u16) {}
+
 fn main() {
     println!("Hello, world!");
     let mut n: i32 = 64;
@@ -79,6 +107,14 @@ fn main() {
     let result: Result<_, Invalid> = input.read_partial(|r| r.read_u8());
     assert_eq!(result, Ok((b'h', dangerous::input(b"ello"))));
 
+    // let s = "Hello world";  /* .unwrap() */
+    // let _ = s.find("wo").unwrap();
+    // // let _ = s.find("wo").unwrap();
+    // let ignore = "s.unwrap();";
+
     // 使用编译器内置的快速内存错误检测功能
     //sanitizer();
+
+    //clippy检测
+    clippycheck();
 }
