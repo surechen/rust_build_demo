@@ -1,11 +1,12 @@
 //#![deny(clippy::all)]
 //#![warn(clippy::all)]
 //#![allow(clippy::all)]
+#![allow(dead_code)]
 
 // Checks for comparisons where one side of the relation is either the
 // minimum or maximum value for its type and warns if it involves a
 // case that is always true or always false. Only integer and boolean types are checked.
-#[allow(dead_code)]
+#[rustfmt::skip]
 #[warn(clippy::absurd_extreme_comparisons)]
 fn absurd_extreme_comparisons() {
     let vec: Vec<isize> = Vec::new();
@@ -14,7 +15,7 @@ fn absurd_extreme_comparisons() {
 }
 
 // Checks for foo = bar; bar = foo sequences.
-#[allow(dead_code)]
+#[rustfmt::skip]
 #[warn(clippy::almost_swapped)]
 fn almost_swapped() {
     let mut a = 1;
@@ -26,7 +27,7 @@ fn almost_swapped() {
 // Checks for floating point literals that
 // approximate constants which are defined in std::f32::consts
 // or std::f64::consts, respectively, suggesting to use the predefined constant.
-#[allow(dead_code)]
+#[rustfmt::skip]
 #[warn(clippy::approx_constant)]
 fn approx_constant() {
     let x = 3.14;
@@ -34,7 +35,7 @@ fn approx_constant() {
 }
 
 // Checks for usage of as conversions.
-#[allow(dead_code)]
+#[rustfmt::skip]
 #[warn(clippy::as_conversions)]
 fn as_conversions() {
     fn f(a: i16) {
@@ -45,7 +46,7 @@ fn as_conversions() {
 }
 
 // Checks for assert!(true) and assert!(false) calls.
-#[allow(dead_code)]
+#[rustfmt::skip]
 #[warn(clippy::assertions_on_constants)]
 fn assertions_on_constants() {
     assert!(false);
@@ -55,7 +56,7 @@ fn assertions_on_constants() {
 }
 
 // Checks for a = a op b or a = b commutative_op a patterns.
-#[allow(dead_code)]
+#[rustfmt::skip]
 #[warn(clippy::assign_op_pattern)]
 fn assign_op_pattern() {
     let mut a = 5;
@@ -69,20 +70,18 @@ fn assign_op_pattern() {
 }
 
 // Checks for async blocks that yield values of types that can themselves be awaited.
-#[allow(dead_code)]
+#[rustfmt::skip]
 #[warn(clippy::async_yields_async)]
 fn async_yields_async() {
     async fn foo() {}
 
     fn bar() {
-        let x = async {
-            foo()
-        };
+        let x = async { foo() };
     }
 }
 
 // Checks for calls to await while holding a non-async-aware MutexGuard.
-#[allow(dead_code)]
+#[rustfmt::skip]
 #[warn(clippy::await_holding_lock)]
 fn await_holding_lock() {
     use std::sync::Mutex;
@@ -105,7 +104,7 @@ fn await_holding_lock() {
 }
 
 // Checks for calls to await while holding a RefCell Ref or RefMut.
-#[allow(dead_code)]
+#[rustfmt::skip]
 #[warn(clippy::await_holding_refcell_ref)]
 fn await_holding_refcell_ref() {
     use std::cell::RefCell;
@@ -124,13 +123,13 @@ fn await_holding_refcell_ref() {
 
 #[warn(clippy::bad_bit_mask)]
 #[allow(
-dead_code,
-clippy::ineffective_bit_mask,
-clippy::identity_op,
-clippy::no_effect,
-clippy::unnecessary_operation,
-clippy::erasing_op
+    clippy::ineffective_bit_mask,
+    clippy::identity_op,
+    clippy::no_effect,
+    clippy::unnecessary_operation,
+    clippy::erasing_op,
 )]
+#[rustfmt::skip]
 fn bad_bit_mask() {
     let x = 5;
 
@@ -144,7 +143,7 @@ fn bad_bit_mask() {
     x | 3 == 2;
 }
 
-#[allow(dead_code)]
+#[rustfmt::skip]
 #[warn(clippy::bind_instead_of_map)]
 fn bind_instead_of_map() {
     let x = Some(5);
@@ -153,15 +152,14 @@ fn bind_instead_of_map() {
 }
 
 #[allow(
-dead_code,
-clippy::similar_names,
-clippy::single_match,
-clippy::toplevel_ref_arg,
-unused_mut,
-unused_variables
+    clippy::similar_names,
+    clippy::single_match,
+    clippy::toplevel_ref_arg,
+    unused_mut,
+    unused_variables
 )]
+#[rustfmt::skip]
 #[warn(clippy::blacklisted_name)]
 fn blacklisted_name() {
     let foo = 3.16;
 }
-
