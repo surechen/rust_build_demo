@@ -3,9 +3,18 @@ os:
   - linux
 rust:
   - nightly
-  - 1.54.0
 script:
   - cargo -V
   - rustc -V
   - cargo build --verbose --workspace
   - cargo test --verbose --workspace
+  - cargo install cargo-supply-chain           # crate发布者信息查询1
+  - supply-chain update
+  - cargo supply-chain crates
+  - cargo supply-chain publishers
+  - cargo install --locked cargo-geiger
+  - cargo geiger || true
+  - cargo install cargo-tree
+  - cargo tree
+  - cargo install tokei
+  - tokei
