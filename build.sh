@@ -151,7 +151,7 @@ cargo benchcmp 1.txt 2.txt
 
 #mock测试，已添加代码，可直接使用cargo test执行
 #mockall
-#mockiato
+#mockiato 官方从2019年尾已经不维护了，准备去掉
 
 #benchmark
 #criterion.rs
