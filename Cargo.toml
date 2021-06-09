@@ -23,7 +23,7 @@ honggfuzz = "0.5"
 [dev-dependencies]
 criterion = "0.3"
 mockall = "0.9.1"
-mockiato ="0.9.5"
+#mockiato ="0.9.5"
 proptest = "1.0.0"
 quickcheck = "1"
 

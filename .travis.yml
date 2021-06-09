@@ -2,12 +2,10 @@ language: rust
 os:
   - linux
 rust:
-  - stable
   - nightly
-jobs:
-  allow_failures:
-    - rust: nightly
-  fast_finish: true
+  - 1.54.0
 script:
+  - cargo -V
+  - rustc -V
   - cargo build --verbose --workspace
   - cargo test --verbose --workspace
