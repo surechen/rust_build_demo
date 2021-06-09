@@ -4,8 +4,43 @@ os:
 rust:
   - nightly
   - 1.54.0
-script:
-  - cargo -V
-  - rustc -V
-  - cargo build --verbose --workspace
-  - cargo test --verbose --workspace
+#script:
+#  - cargo -V
+#  - rustc -V
+#  - cargo build --verbose --workspace
+#  - cargo test --verbose --workspace
+
+jobs:
+  include:
+    - stage: "build"
+      name: "构建"
+      script:
+        - cargo -V
+        - rustc -V
+        - cargo build --verbose --workspace
+    - stage: "test"
+        name: "测试"
+        script:
+        - cargo test --verbose --workspace
+    - stage: "crate发布者信息查询"
+      name: "cargo supply-chain"
+      script:
+        - cargo install cargo-supply-chain
+        - supply-chain update
+        - cargo supply-chain crates
+        - cargo supply-chain publishers
+    - stage: "统计项目使用到的crates的unsafe代码片段信息"
+        name: "cargo geiger"
+        script:
+          - cargo install --locked cargo-geiger
+          - cargo geiger || true
+    - stage: "统计项目使用到的crates的unsafe代码片段信息"
+        name: "cargo tree"
+        script:
+          - cargo install cargo-tree
+          - cargo tree
+    - stage: "代码行数统计"
+        name: "tokei"
+        script:
+          - cargo install tokei
+          - tokei

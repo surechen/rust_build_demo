@@ -11,10 +11,10 @@
 
 ####################################依赖检查####################################
 #crate发布者信息查询，执行慢，暂时关闭
-#cargo install cargo-supply-chain
-#cargo supply-chain update
-#cargo supply-chain crates
-#cargo supply-chain publishers
+cargo install cargo-supply-chain
+cargo supply-chain update
+cargo supply-chain crates
+cargo supply-chain publishers
 
 #统计项目使用到的crates的unsafe代码片段信息
 cargo install --locked cargo-geiger
