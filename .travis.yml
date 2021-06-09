@@ -8,7 +8,7 @@ script:
   - rustc -V
   - cargo build --verbose --workspace
   - cargo test --verbose --workspace
-  - cargo install cargo-supply-chain
+  - cargo install cargo-supply-chain           # crate发布者信息查询
   - supply-chain update
   - cargo supply-chain crates
   - cargo supply-chain publishers
