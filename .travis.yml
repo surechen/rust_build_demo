@@ -3,13 +3,6 @@ os:
   - linux
 rust:
   - nightly
-  - 1.54.0
-#script:
-#  - cargo -V
-#  - rustc -V
-#  - cargo build --verbose --workspace
-#  - cargo test --verbose --workspace
-
 jobs:
   include:
     - stage: "build"
