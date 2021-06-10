@@ -19,7 +19,7 @@ jobs:
       name: "cargo supply-chain"
       script:
         - cargo install cargo-supply-chain
-        - supply-chain update
+        - cargo supply-chain update
         - cargo supply-chain crates
         - cargo supply-chain publishers
     - stage: "统计项目使用到的crates的unsafe代码片段信息"
