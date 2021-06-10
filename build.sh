@@ -74,9 +74,6 @@ cargo llvm-lines | head -20
 cargo install cargo-license
 cargo license
 
-#依赖的crates作者信息展示，依赖网络可能失败
-#cargo install cargo-supply-chain --force || true
-#cargo supply-chain crates  || true
 #cargo 依赖的crates是否有新版本
 cargo install cargo-outdated
 cargo outdated || true 
