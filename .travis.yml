@@ -8,14 +8,25 @@ script:
   - rustc -V
   - cargo build --verbose --workspace
   - cargo test --verbose --workspace
-  - cargo install cargo-supply-chain
 # crate发布者信息查询
+  - cargo install cargo-supply-chain
   - cargo supply-chain update
   - cargo supply-chain crates
   - cargo supply-chain publishers
+# 统计项目使用到的crates的unsafe代码片段信息
   - cargo install --locked cargo-geiger
   - cargo geiger || true
+#跟踪和查询crates依存关系图
   - cargo install cargo-tree
   - cargo tree
+#代码行数统计
   - cargo install tokei
   - tokei
+#检查Cargo.toml中未使用的依赖
+  - cargo install cargo-udeps --locked
+  - cargo +nightly udeps --all-targets || true
+#通过advisory-db进行漏洞检查
+  - cargo install --locked  cargo-audit || true
+  - cargo audit
+#代码格式化检查
+  - cargo fmt -- --check
