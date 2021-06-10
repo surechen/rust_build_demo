@@ -11,10 +11,10 @@
 
 ####################################依赖检查####################################
 #crate发布者信息查询，执行慢，暂时关闭
-#cargo install cargo-supply-chain
-#cargo supply-chain update
-#cargo supply-chain crates
-#cargo supply-chain publishers
+cargo install cargo-supply-chain
+cargo supply-chain update
+cargo supply-chain crates
+cargo supply-chain publishers
 
 #统计项目使用到的crates的unsafe代码片段信息
 cargo install --locked cargo-geiger
@@ -151,7 +151,7 @@ cargo benchcmp 1.txt 2.txt
 
 #mock测试，已添加代码，可直接使用cargo test执行
 #mockall
-#mockiato
+#mockiato 官方从2019年尾已经不维护了，准备去掉
 
 #benchmark
 #criterion.rs
