@@ -20,32 +20,32 @@ cargo supply-chain publishers
 
 # 统计项目使用到的crates的unsafe代码片段信息
 cargo install --locked cargo-geiger
-cargo geiger > workplace/geiger.txt 2>&1 || true
+cargo geiger > workplace/cargo-geiger.txt 2>&1 || true
 
 # 跟踪和查询crates依存关系图
 cargo install cargo-tree
-cargo tree > workplace/tree.txt 2>&1
+cargo tree > workplace/cargo-tree.txt 2>&1
 
 # 软件依赖图
 cargo install cargo-deps
 sudo apt install graphviz
-cargo deps --all-deps | dot -Tpng > workplace/deps_graph.png
+cargo deps --all-deps | dot -Tpng > workplace/cargo-deps.png
 
 # 代码行数统计
 cargo install tokei
-tokei > workplace/tokei.txt 2>&1 || true
+tokei > workplace/cargo-tokei.txt 2>&1 || true
 
 # 检查Cargo.toml中未使用的依赖
 cargo +stable install cargo-udeps --locked
-cargo +nightly udeps --all-targets > workplace/udeps.txt 2>&1 || true
+cargo +nightly udeps --all-targets > workplace/cargo-udeps.txt 2>&1 || true
 ##############################################################################
 
 ####################################漏洞检查####################################
 # 拉取advisory-db有时候会失败
 # 从advisory-db搜索并打印项目依赖的crates的漏洞信息
-cargo install --locked cargo-audit || true
-mkdir -vp /usr/local/src/rust/advisory-db
-cargo audit --db /usr/local/src/rust/advisory-db || true
+#cargo install --locked cargo-audit || true
+#mkdir -vp /usr/local/src/rust/advisory-db
+cargo audit --db /usr/local/src/rust/advisory-db > workplace/cargo-audit.txt 2>&1 || true
 ##############################################################################
 
 ####################################静态检查####################################
@@ -58,7 +58,7 @@ cargo clippy
 
 # cargo deny配置在deny.toml，根据配置禁用crate，包含crate源位置、license、漏洞
 cargo install --locked cargo-deny
-cargo deny check || true
+cargo deny check > workplace/cargo-deny.txt 2>&1 || true
 
 # 检查unwrap函数
 cargo install --git https://github.com/hhatto/cargo-strict.git
@@ -98,8 +98,8 @@ mlc
 # 只限于linux
 sudo apt-get install valgrind
 cargo install cargo-profiler
-cargo profiler callgrind > workplace/profiler_callgrind.txt 2>&1
-cargo profiler cachegrind --release > workplace/profiler_cachegrind.txt 2>&1
+cargo profiler callgrind > workplace/cargo-profiler-callgrind.txt 2>&1
+cargo profiler cachegrind --release > workplace/cargo-profiler-cachegrind.txt 2>&1
 
 # 构建
 cargo build
@@ -219,7 +219,7 @@ cargo asm
 # [level](https://github.com/sunng87/cargo-release/blob/master/docs/reference.md)
 #cargo release [level]
 
-# 创建crate的rpm版zhangxinzhangxsssd本
+# 创建crate的rpm版本
 # 目前有问题： error: rpmbuild error: error running rpmbuild: No such file or directory (os error 2)
 #cargo rpm init
 #cargo rpm build
@@ -241,17 +241,30 @@ cargo asm
 #####################################结果展示#####################################
 
 # 打印未使用的依赖项
-# ‘\047’代表单引号，在我们的例子中最后是拼接命令awk 'NR>=381' workplace/udeps.txt
+# ‘\047’代表单引号，在我们的例子中最后是拼接命令awk 'NR>=381' workplace/cargo-udeps.txt
 echo -e "cargo-deps：未使用的crate依赖项\n"
-cat -n workplace/udeps.txt | grep "unused dependencies:" | awk '{cmd= "awk \047NR>="$1"\047 workplace/udeps.txt"; system(cmd)}'
+cat -n workplace/cargo-udeps.txt | grep "unused dependencies:" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-udeps.txt"; system(cmd)}'
 
 # 打印依赖树
 echo -e "cargo-tree：crates依赖关系树\n"
-cat workplace/tree.txt
+cat workplace/cargo-tree.txt
 
 # 程序画像结果
 echo -e "cargo-profiler：函数调用统计\n"
-cat workplace/profiler_callgrind.txt
+cat workplace/cargo-profiler-callgrind.txt
 echo -e "cargo-profiler：cpu cache信息统计\n"
-cat workplace/profiler_cachegrind.txt
+cat workplace/cargo-profiler-cachegrind.txt
+
+# 漏洞检测
+echo -e "cargo-audit：漏洞检测\n"
+cat workplace/cargo-audit.txt
+
+# 统计unsafe代码片段信息
+echo -e "cargo-geiger：unsafe代码片段检测\n"
+cat workplace/cargo-geiger.txt
+
+# 代码行数统计
+echo -e "cargo-tokei：代码行数统计\n"
+cat workplace/cargo-tokei.txt
+
 ##############################################################################

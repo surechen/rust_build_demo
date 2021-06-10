@@ -6,6 +6,7 @@ rust:
 script:
   - cargo -V
   - rustc -V
+  - rustup install stable
   - rustup component add rustfmt
   - rustup component add clippy
   - cargo build --verbose --workspace
