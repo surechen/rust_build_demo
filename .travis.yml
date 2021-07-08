@@ -28,7 +28,7 @@ script:
 # 检查Cargo.toml中未使用的依赖
 #  - cargo +stable install cargo-udeps --locked --force || true
 #  - cargo +nightly udeps --all-targets || true
-# 通过advisory-db进行漏洞检查 
+# 通过advisory-db进行漏洞检查
   - cargo +stable install --locked  cargo-audit || true
   - cargo audit || true
 # 代码格式化检查

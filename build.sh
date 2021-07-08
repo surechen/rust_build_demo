@@ -1,3 +1,4 @@
+#!/bin/bash
 # 测试项目: https://github.com/HPCWorkspace/rust_build_demo/
 ####################################环境准备####################################
 # 安装rustup
@@ -54,7 +55,7 @@ cargo fmt -- --check
 #cargo  fmt --all
 
 # 语法检查
-cargo clippy
+cargo clippy > workplace/cargo-clippy.txt 2>&1 || true
 
 # cargo deny配置在deny.toml，根据配置禁用crate，包含crate源位置、license、漏洞
 cargo install --locked cargo-deny
@@ -62,15 +63,18 @@ cargo deny check > workplace/cargo-deny.txt 2>&1 || true
 
 # 检查unwrap函数
 cargo install --git https://github.com/hhatto/cargo-strict.git
-cargo strict
+cargo strict > workplace/cargo-strict.txt 2>&1
 
-# 检查各个函数在可执行文件的空间占用百分比
+# 检查crate或function占用可执行文件空间百分比
 cargo install cargo-bloat
-cargo bloat --release --crates
+# 检查各个crate在可执行文件的空间占用百分比
+cargo bloat --release --crates > workplace/cargo-bloat-crates.txt 2>&1 || true
+# 检查各个函数在可执行文件的空间占用百分比
+cargo bloat --release -n 30 > workplace/cargo-bloat-func.txt 2>&1 || true
 
 # 计算泛型函数所有实例化中LLVM IR的行数
 cargo install cargo-llvm-lines
-cargo llvm-lines | head -20
+cargo llvm-lines --bin rust_build_demo1 > workplace/cargo-llvm-lines.txt 2>&1 || true
 
 # license检查
 cargo install cargo-license
@@ -175,11 +179,12 @@ cargo install cargo-expand
 cargo expand --bin rust_build_demo1
 
 # 解开Rust语法糖，查看编译器对代码做了什么
+# 2020年7月后无人工维护
 # 需要使用nightly
 #rustup install nightly
 #rustup component add rustfmt
-cargo install cargo-inspect
-cargo inspect
+#cargo install cargo-inspect
+#cargo inspect
 
 # 更新依赖的crate
 #cargo install cargo-update
@@ -194,7 +199,7 @@ cargo tomlfmt
 
 # 打印Rust代码的汇编或LLVM IR
 cargo install cargo-asm
-cargo asm
+cargo asm rust_build_demo1::main --rust > workplace/cargo-asm.txt 2>&1
 
 # 一行执行多个命令
 #cargo install cargo-do
@@ -235,6 +240,12 @@ cargo asm
 # 根据.h头文件生成bingding文件
 #cargo install bindgen
 #bindgen ./toolsbox/bindgen/input.h -o bindings.rs
+
+# 生成modules信息
+# cargo-modules
+cargo install cargo-modules
+cargo modules generate tree --bin rust_build_demo1
+cargo modules generate graph --bin rust_build_demo1
 ##############################################################################
 
 
@@ -266,5 +277,30 @@ cat workplace/cargo-geiger.txt
 # 代码行数统计
 echo -e "cargo-tokei：代码行数统计\n"
 cat workplace/cargo-tokei.txt
+
+# 检查unwrap函数
+echo -e "cargo-strict：检查unwrap函数\n"
+cat workplace/cargo-strict.txt
+
+# clippy检查
+echo -e "cargo-clippy：lints检查\n"
+rm workplace/cargo-clippy-result.txt
+grep "warn(clippy::" workplace/cargo-clippy.txt | awk -F"::" '{print $2}' | awk -F")" '{cmd= "c="$1"; a=\140grep \""$1"\" workplace/cargo-clippy.txt | wc -l\140; d=\042$c : $a\042; echo $d >> workplace/cargo-clippy-result.txt"; system(cmd)}'
+grep "warnings emitted" workplace/cargo-clippy.txt
+cat workplace/cargo-clippy-result.txt
+#cat workplace/cargo-clippy.txt
+
+# 检查crate在可执行文件的空间占用百分比
+echo -e "cargo-bloat： 可执行文件的空间占用百分比\n"
+cat -n workplace/cargo-bloat-crates.txt | grep "File  .text" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-bloat-crates.txt"; system(cmd)}'
+
+# 检查各个函数在可执行文件的空间占用百分比
+echo -e "cargo-bloat： 可执行文件的空间占用百分比\n"
+cat -n workplace/cargo-bloat-func.txt | grep "File  .text" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-bloat-func.txt"; system(cmd)}'
+
+# 计算泛型函数所有实例化中LLVM IR的行数
+echo -e "cargo-llvm-lines： 各函数LLVM IR的行数\n"
+cat -n workplace/cargo-llvm-lines.txt | grep "Lines        Copies" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-llvm-lines.txt"; system(cmd)}'
+
 
 ##############################################################################
