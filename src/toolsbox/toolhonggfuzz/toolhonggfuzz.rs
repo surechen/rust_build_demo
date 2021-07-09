@@ -7,7 +7,7 @@ fn main() {
     // setup / initialize your project
 
     let mut some_global_state = 0u64;
-    let mut count = 0;
+    // let mut count = 0;
     // You have full control over the loop but
     // you're supposed to call `fuzz` ad vitam aeternam
     // loop {

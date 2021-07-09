@@ -8,7 +8,7 @@
 # 安装rustc-dev，包含hir和ast解析相关的crate
 # 安装rustfmt
 # 安装clippy
-rustup component add rustc-dev rust-src clippy rustfmt
+rustup component add rustc-dev rust-src clippy rustfmt miri
 mkdir workplace
 ##############################################################################
 
@@ -39,6 +39,16 @@ tokei > workplace/cargo-tokei.txt 2>&1 || true
 # 检查Cargo.toml中未使用的依赖
 cargo +stable install cargo-udeps --locked
 cargo +nightly udeps --all-targets > workplace/cargo-udeps.txt 2>&1 || true
+
+# 显示crates概述信息
+# cargo-modules
+cargo install cargo-modules
+cargo modules generate tree --bin rust_build_demo1 > workplace/cargo-modules-tree.txt 2>&1
+cargo modules generate graph --bin rust_build_demo1 > workplace/cargo-modules-graph.txt 2>&1
+
+# license信息展示
+cargo install cargo-license
+cargo license > workplace/cargo-license.txt 2>&1
 ##############################################################################
 
 ####################################漏洞检查####################################
@@ -51,7 +61,7 @@ cargo audit --db /usr/local/src/rust/advisory-db > workplace/cargo-audit.txt 2>&
 
 ####################################静态检查####################################
 # 代码格式化检查
-cargo fmt -- --check
+cargo fmt -- --check > workplace/cargo-check.txt 2>&1 || true
 #cargo  fmt --all
 
 # 语法检查
@@ -62,8 +72,8 @@ cargo install --locked cargo-deny
 cargo deny check > workplace/cargo-deny.txt 2>&1 || true
 
 # 检查unwrap函数
-cargo install --git https://github.com/hhatto/cargo-strict.git
-cargo strict > workplace/cargo-strict.txt 2>&1
+cargo install --git https://github.com/hhatto/cargo-strict.git || true
+cargo strict > workplace/cargo-strict.txt 2>&1 || true
 
 # 检查crate或function占用可执行文件空间百分比
 cargo install cargo-bloat
@@ -76,13 +86,9 @@ cargo bloat --release -n 30 > workplace/cargo-bloat-func.txt 2>&1 || true
 cargo install cargo-llvm-lines
 cargo llvm-lines --bin rust_build_demo1 > workplace/cargo-llvm-lines.txt 2>&1 || true
 
-# license检查
-cargo install cargo-license
-cargo license
-
 # cargo 依赖的crates是否有新版本
-cargo install cargo-outdated
-cargo outdated || true 
+cargo install cargo-outdated || true
+cargo outdated > workplace/cargo-outdated.txt 2>&1 || true
 
 # cargo doc中损坏的链接检查
 cargo install cargo-deadlinks
@@ -122,7 +128,7 @@ unset RUSTDOCFLAGS
 # 代码覆盖率检查
 # cargo-tarpaulin 只支持x86上的linux系统
 cargo install cargo-tarpaulin
-cargo tarpaulin --all  --all-features || true
+cargo tarpaulin --all  --all-features > workplace/cargo-tarpaulin.txt 2>&1 || true
 
 # 代码覆盖率检查kcov
 #cargo install cargo-kcov || true
@@ -241,11 +247,7 @@ cargo asm rust_build_demo1::main --rust > workplace/cargo-asm.txt 2>&1
 #cargo install bindgen
 #bindgen ./toolsbox/bindgen/input.h -o bindings.rs
 
-# 生成modules信息
-# cargo-modules
-cargo install cargo-modules
-cargo modules generate tree --bin rust_build_demo1
-cargo modules generate graph --bin rust_build_demo1
+
 ##############################################################################
 
 
@@ -302,5 +304,28 @@ cat -n workplace/cargo-bloat-func.txt | grep "File  .text" | awk '{cmd= "awk \04
 echo -e "cargo-llvm-lines： 各函数LLVM IR的行数\n"
 cat -n workplace/cargo-llvm-lines.txt | grep "Lines        Copies" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-llvm-lines.txt"; system(cmd)}'
 
+# 显示crates概述信息
+# cargo-modules
+cat -n workplace/cargo-modules-tree.txt | grep "rust_build_demo1" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-modules-tree.txt"; system(cmd)}'
+cat -n workplace/cargo-modules-graph.txt | grep "digraph" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-modules-graph.txt"; system(cmd)}'
 
+# 代码覆盖率检测
+# cargo-tarpaulin
+cat -n workplace/cargo-tarpaulin.txt | grep "Coverage Results:" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-tarpaulin.txt"; system(cmd)}'
+
+# 打印汇编代码
+# cargo-asm
+cat workplace/cargo-asm.txt
+
+# 格式检查
+# cargo-check
+cat workplace/cargo-check.txt
+
+# license信息展示
+# cargo-license
+cat workplace/cargo-license.txt
+
+# 查看依赖crates是否有新的版本
+# cargo-outdated
+cat -n workplace/cargo-outdated.txt | grep "Name                                Project" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-outdated.txt"; system(cmd)}'
 ##############################################################################
