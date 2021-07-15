@@ -8,7 +8,7 @@
 # 安装rustc-dev，包含hir和ast解析相关的crate
 # 安装rustfmt
 # 安装clippy
-rustup component add rustc-dev rust-src clippy rustfmt miri
+rustup component add rustc-dev rust-src clippy rustfmt miri llvm-tools-preview
 mkdir workplace
 ##############################################################################
 
@@ -137,6 +137,31 @@ cargo tarpaulin --all  --all-features > workplace/cargo-tarpaulin.txt 2>&1 || tr
 #cargo kcov --print-install-kcov-sh | sh || true
 cargo kcov
 
+# 代码覆盖率
+# grcov
+cargo install grcov
+# How to generate source-based coverage for a Rust project
+export RUSTFLAGS="-Zinstrument-coverage"
+cargo build
+export LLVM_PROFILE_FILE="your_name-%p-%m.profraw"
+cargo test
+# How to generate .gcda files for a Rust project
+export CARGO_INCREMENTAL=0
+export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort"
+export RUSTDOCFLAGS="-Cpanic=abort"
+cargo build
+cargo test
+# .gcda in target/debug/deps/ dir
+grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existing -o ./target/debug/coverage/
+# the report in target/debug/coverage/index.html
+# for lcov
+#grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/coverage/lcov.info
+#genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./target/debug/coverage/lcov.info
+# coveralls format
+#grcov . --binary-path ./target/debug/ -t coveralls -s . --token YOUR_COVERALLS_TOKEN > coveralls.json
+
+
+
 # fuzzcheck模糊测试
 #cargo +nightly install cargo-fuzzcheck
 
@@ -182,7 +207,7 @@ cargo test || true
 
 # 宏展开工具
 cargo install cargo-expand
-cargo expand --bin rust_build_demo1
+cargo expand --bin rust_build_demo1 > workplace/cargo-expand.txt 2>&1
 
 # 解开Rust语法糖，查看编译器对代码做了什么
 # 2020年7月后无人工维护
@@ -199,9 +224,13 @@ cargo expand --bin rust_build_demo1
 # 打印cargo cache信息
 #cargo cache
 
-# 格式化Cargo.toml
+# 格式化Cargo.toml检测
 cargo install cargo-tomlfmt
+cp ./Cargo.toml ./Cargo_bef.toml
 cargo tomlfmt
+./build/diff.sh ./Cargo.toml ./Cargo_bef.toml
+cp ./Cargo_bef.toml ./Cargo.toml
+rm ./Cargo_bef.toml
 
 # 打印Rust代码的汇编或LLVM IR
 cargo install cargo-asm
@@ -284,13 +313,16 @@ cat workplace/cargo-tokei.txt
 echo -e "cargo-strict：检查unwrap函数\n"
 cat workplace/cargo-strict.txt
 
-# clippy检查
+# clippy lint检查
 echo -e "cargo-clippy：lints检查\n"
 rm workplace/cargo-clippy-result.txt
 grep "warn(clippy::" workplace/cargo-clippy.txt | awk -F"::" '{print $2}' | awk -F")" '{cmd= "c="$1"; a=\140grep \""$1"\" workplace/cargo-clippy.txt | wc -l\140; d=\042$c : $a\042; echo $d >> workplace/cargo-clippy-result.txt"; system(cmd)}'
 grep "warnings emitted" workplace/cargo-clippy.txt
 cat workplace/cargo-clippy-result.txt
 #cat workplace/cargo-clippy.txt
+
+# dylint lint检查
+#cargo install cargo-dylint dylint-link
 
 # 检查crate在可执行文件的空间占用百分比
 echo -e "cargo-bloat： 可执行文件的空间占用百分比\n"
@@ -328,4 +360,11 @@ cat workplace/cargo-license.txt
 # 查看依赖crates是否有新的版本
 # cargo-outdated
 cat -n workplace/cargo-outdated.txt | grep "Name                                Project" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-outdated.txt"; system(cmd)}'
+
+# 宏展开展示
+# cargo-expand
+cat workplace/cargo-expand.txt
+
+
+
 ##############################################################################
