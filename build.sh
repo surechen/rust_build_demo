@@ -14,12 +14,13 @@ mkdir workplace
 
 ####################################依赖检查####################################
 # crate发布者信息查询，执行慢，暂时关闭
-cargo install cargo-supply-chain
-cargo supply-chain update
-cargo supply-chain crates
-cargo supply-chain publishers
+#cargo install cargo-supply-chain
+#cargo supply-chain update
+#cargo supply-chain crates
+#cargo supply-chain publishers
 
 # 统计项目使用到的crates的unsafe代码片段信息
+# 需要正确安装openssl
 cargo install --locked cargo-geiger
 cargo geiger > workplace/cargo-geiger.txt 2>&1 || true
 
@@ -54,9 +55,9 @@ cargo license > workplace/cargo-license.txt 2>&1
 ####################################漏洞检查####################################
 # 拉取advisory-db有时候会失败
 # 从advisory-db搜索并打印项目依赖的crates的漏洞信息
-#cargo install --locked cargo-audit || true
+#cargo +stable install --locked cargo-audit || true
 #mkdir -vp /usr/local/src/rust/advisory-db
-cargo audit --db /usr/local/src/rust/advisory-db > workplace/cargo-audit.txt 2>&1 || true
+cargo audit --db /usr/local/src/rust/advisory-db --no-fetch > workplace/cargo-audit.txt 2>&1 || true
 ##############################################################################
 
 ####################################静态检查####################################
@@ -69,7 +70,9 @@ cargo clippy > workplace/cargo-clippy.txt 2>&1 || true
 
 # cargo deny配置在deny.toml，根据配置禁用crate，包含crate源位置、license、漏洞
 cargo install --locked cargo-deny
-cargo deny check > workplace/cargo-deny.txt 2>&1 || true
+cargo deny check sources > workplace/cargo-deny-sources.txt 2>&1 || true
+cargo deny check bans > workplace/cargo-deny-bans.txt 2>&1 || true
+cargo deny check license > workplace/cargo-deny-license.txt 2>&1 || true
 
 # 检查unwrap函数
 cargo install --git https://github.com/hhatto/cargo-strict.git || true
@@ -365,6 +368,10 @@ cat -n workplace/cargo-outdated.txt | grep "Name                                
 # cargo-expand
 cat workplace/cargo-expand.txt
 
+# cargo deny
+cat workplace/cargo-deny-sources.txt
+cat workplace/cargo-deny-bans.txt
+cat workplace/cargo-deny-license.txt
 
 
 ##############################################################################
