@@ -158,6 +158,7 @@ cargo test
 grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existing -o ./target/debug/coverage/
 # the report in target/debug/coverage/index.html
 # for lcov
+# apt-get install lcov
 #grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/coverage/lcov.info
 #genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./target/debug/coverage/lcov.info
 # coveralls format
@@ -166,6 +167,7 @@ grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existin
 
 
 # fuzzcheck模糊测试
+# 维护者少，暂不选用
 #cargo +nightly install cargo-fuzzcheck
 
 # fuzz测试
@@ -216,15 +218,16 @@ cargo expand --bin rust_build_demo1 > workplace/cargo-expand.txt 2>&1
 # 2020年7月后无人工维护
 # 需要使用nightly
 #rustup install nightly
-#rustup component add rustfmt
-#cargo install cargo-inspect
-#cargo inspect
+#rustup +nightly component add rustfmt
+#cargo +nightly install cargo-inspect
+#cargo +nightly inspect
 
 # 更新依赖的crate
-#cargo install cargo-update
+#cargo +nightly install cargo-update
 #cargo update
 
 # 打印cargo cache信息
+#cargo +nightly install cargo-cache
 #cargo cache
 
 # 格式化Cargo.toml检测
