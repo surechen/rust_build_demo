@@ -167,7 +167,7 @@ grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existin
 
 
 # fuzzcheck模糊测试
-# 维护者少，暂不选用
+# 维护者少，待观察
 #cargo +nightly install cargo-fuzzcheck
 
 # fuzz测试
@@ -223,11 +223,11 @@ cargo expand --bin rust_build_demo1 > workplace/cargo-expand.txt 2>&1
 #cargo +nightly inspect
 
 # 更新依赖的crate
-#cargo +nightly install cargo-update
+#cargo install cargo-update
 #cargo update
 
 # 打印cargo cache信息
-#cargo +nightly install cargo-cache
+#cargo install cargo-cache
 #cargo cache
 
 # 格式化Cargo.toml检测
