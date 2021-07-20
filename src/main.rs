@@ -5,22 +5,25 @@ mod toolsbox;
 #[cfg_attr(test, macro_use)]
 extern crate quickcheck;
 
+#[cfg(test)]
+mod tests {
+    fn reverse<T: Clone>(xs: &[T]) -> Vec<T> {
+        let mut rev = vec![];
+        for x in xs.iter() {
+            rev.insert(0, x.clone())
+        }
+        rev
+    }
+
+    quickcheck! {
+        fn prop(xs: Vec<u32>) -> bool {
+            xs == reverse(&reverse(&xs))
+        }
+    }
+}
+
 // #[cfg(test)]
 // mod tests {
-//     fn reverse<T: Clone>(xs: &[T]) -> Vec<T> {
-//         let mut rev = vec![];
-//         for x in xs.iter() {
-//             rev.insert(0, x.clone())
-//         }
-//         rev
-//     }
-//
-//     quickcheck! {
-//         fn prop(xs: Vec<u32>) -> bool {
-//             xs == reverse(&reverse(&xs))
-//         }
-//     }
-//
 //     //proptest
 //     //使用proptest工具测试，这里会发现错误
 //     use crate::parse_date;

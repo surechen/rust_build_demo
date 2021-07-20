@@ -221,7 +221,9 @@ echo -e "\n\n\n"
 #criterion.rs
 
 # 代码中已包含proptest和quickcheck
-echo -e "测试，包含proptest和quickcheck\n"
+echo -e "cargo test： 测试\n"
+echo -e "属性测试quickcheck\n"
+echo -e "模糊测试proptest 会报错，影响覆盖率工具，默认注释掉，需要查看请打开注释\n"
 cargo test > workplace/cargo-test.txt 2>&1 || true
 echo -e "\n\n\n"
 echo -e "####################################测试 end####################################\n\n\n"
