@@ -141,9 +141,8 @@ echo -e "\n\n\n"
 echo -e "sanitizer快速内存错误检测器，能够检测unsafe部分\n"
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 # 编译并执行
-cargo run || true
-unset RUSTFLAGS
-unset RUSTDOCFLAGS
+cargo run  > workplace/cargo-sanitizer-run.txt 2>&1 || true
+unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
 echo -e "####################################动态检查 end####################################\n\n\n"
 
@@ -165,29 +164,29 @@ echo -e "\n\n\n"
 
 echo -e "grcov:  代码覆盖率\n"
 # grcov
-cargo install grcov
+#cargo install grcov
 # How to generate source-based coverage for a Rust project
-export RUSTFLAGS="-Zinstrument-coverage"
-cargo build
-export LLVM_PROFILE_FILE="your_name-%p-%m.profraw"
-cargo test
+#export RUSTFLAGS="-Zinstrument-coverage"
+#cargo build
+#export LLVM_PROFILE_FILE="your_name-%p-%m.profraw"
+#cargo test
 # How to generate .gcda files for a Rust project
-export CARGO_INCREMENTAL=0
-export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort"
-export RUSTDOCFLAGS="-Cpanic=abort"
-cargo build
-cargo test
+#export CARGO_INCREMENTAL=0
+#export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort"
+#export RUSTDOCFLAGS="-Cpanic=abort"
+#cargo build
+#cargo test
 # .gcda in target/debug/deps/ dir
-grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existing -o ./target/debug/coverage/
+#grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existing -o ./target/debug/coverage/
 # the report in target/debug/coverage/index.html
 # for lcov
 # apt-get install lcov
-#grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/coverage/lcov.info
-#genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./target/debug/coverage/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
+grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/coverage/lcov.info
+genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./target/debug/coverage/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
 # coveralls format
 #grcov . --binary-path ./target/debug/ -t coveralls -s . --token YOUR_COVERALLS_TOKEN > coveralls.json
-unset RUSTFLAGS
-unset RUSTDOCFLAGS
+#unset RUSTFLAGS
+#unset RUSTDOCFLAGS
 echo -e "\n\n\n"
 
 # fuzzcheck模糊测试
@@ -223,7 +222,7 @@ echo -e "\n\n\n"
 
 # 代码中已包含proptest和quickcheck
 echo -e "测试，包含proptest和quickcheck\n"
-cargo test || true
+cargo test > workplace/cargo-test.txt 2>&1 || true
 echo -e "\n\n\n"
 echo -e "####################################测试 end####################################\n\n\n"
 
@@ -480,4 +479,18 @@ echo -e "-----------------------------------------------------------------------
 echo -e "cargo-grcov： 代码覆盖率结果展示\n"
 cat -n workplace/cargo-grcov.txt | grep "Overall coverage rate" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-grcov.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# 测试结果
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+echo -e "测试结果展示\n"
+cat -n workplace/cargo-test.txt | grep "running" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-test.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# sanitizer
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+echo -e "sanitizer快速内存错误检测器\n"
+cat -n workplace/cargo-sanitizer-run.txt | grep "============================" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer-run.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+
 echo -e "#####################################结果展示 end#####################################\n\n\n"
