@@ -1,5 +1,5 @@
 #!/bin/bash
-# 测试项目: https://github.com/HPCWorkspace/rust_build_demo/
+# 测试项目: https://github.com/surechen/rust_build_demo/
 echo -e "#####################################环境准备#####################################\n\n\n"
 # 安装rustup
 # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -58,9 +58,9 @@ echo -e "####################################漏洞检查#######################
 #cargo +stable install --locked cargo-audit || true
 #mkdir -vp /usr/local/src/rust/advisory-db
 cargo audit --db /usr/local/src/rust/advisory-db --no-fetch > workplace/cargo-audit.txt 2>&1 || true
-##############################################################################
+echo -e "####################################漏洞检查 end####################################\n\n\n"
 
-####################################静态检查####################################
+echo -e "####################################静态检查####################################\n\n\n"
 # 代码格式化检查
 cargo fmt -- --check > workplace/cargo-check.txt 2>&1 || true
 #cargo  fmt --all
@@ -101,7 +101,7 @@ cargo deadlinks --check-http
 # 检查损坏的链接
 cargo install mlc
 mlc > workplace/cargo-mlc.txt 2>&1
-echo -e "####################################漏洞检查 end####################################\n\n\n"
+echo -e "####################################静态检查 end####################################\n\n\n"
 
 echo -e "####################################动态检查####################################\n\n\n"
 # 给程序画像
