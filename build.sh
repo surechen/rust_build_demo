@@ -100,7 +100,7 @@ cargo deadlinks --check-http
 
 # 检查损坏的链接
 cargo install mlc
-mlc
+mlc > workplace/cargo-mlc.txt 2>&1
 
 ##############################################################################
 
@@ -160,7 +160,7 @@ grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existin
 # for lcov
 # apt-get install lcov
 #grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/coverage/lcov.info
-#genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./target/debug/coverage/lcov.info
+#genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./target/debug/coverage/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
 # coveralls format
 #grcov . --binary-path ./target/debug/ -t coveralls -s . --token YOUR_COVERALLS_TOKEN > coveralls.json
 
@@ -234,6 +234,7 @@ cargo expand --bin rust_build_demo1 > workplace/cargo-expand.txt 2>&1
 cargo install cargo-tomlfmt
 cp ./Cargo.toml ./Cargo_bef.toml
 cargo tomlfmt
+chmod 755 ./build/diff.sh
 ./build/diff.sh ./Cargo.toml ./Cargo_bef.toml > workplace/cargo-tomlfmt.txt 2>&1
 cp ./Cargo_bef.toml ./Cargo.toml
 rm ./Cargo_bef.toml
@@ -272,7 +273,7 @@ cargo asm rust_build_demo1::main --rust > workplace/cargo-asm.txt 2>&1
 
 # 执行rs脚本
 #cargo install cargo-script
-cargo script ./toolsbox/cargo-script/helloworld.rs > workplace/cargo-script.txt 2>&1
+cargo script ./src/toolsbox/cargo-script/helloworld.rs > workplace/cargo-script.txt 2>&1
 
 # 文档生成
 # 使用rustdoc
@@ -290,106 +291,160 @@ cargo script ./toolsbox/cargo-script/helloworld.rs > workplace/cargo-script.txt 
 
 # 打印未使用的依赖项
 # ‘\047’代表单引号，在我们的例子中最后是拼接命令awk 'NR>=381' workplace/cargo-udeps.txt
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-deps：未使用的crate依赖项\n"
 cat -n workplace/cargo-udeps.txt | grep "unused dependencies:" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-udeps.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 打印依赖树
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-tree：crates依赖关系树\n"
 cat workplace/cargo-tree.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 程序画像结果
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-profiler：函数调用统计\n"
 cat workplace/cargo-profiler-callgrind.txt
 echo -e "cargo-profiler：cpu cache信息统计\n"
 cat workplace/cargo-profiler-cachegrind.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 漏洞检测
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-audit：漏洞检测\n"
 cat workplace/cargo-audit.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 统计unsafe代码片段信息
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-geiger：unsafe代码片段检测\n"
 cat workplace/cargo-geiger.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 代码行数统计
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-tokei：代码行数统计\n"
 cat workplace/cargo-tokei.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 检查unwrap函数
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-strict：检查unwrap函数\n"
 cat workplace/cargo-strict.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # clippy lint检查
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-clippy：lints检查\n"
 rm workplace/cargo-clippy-result.txt
 grep "warn(clippy::" workplace/cargo-clippy.txt | awk -F"::" '{print $2}' | awk -F")" '{cmd= "c="$1"; a=\140grep \""$1"\" workplace/cargo-clippy.txt | wc -l\140; d=\042$c : $a\042; echo $d >> workplace/cargo-clippy-result.txt"; system(cmd)}'
 grep "warnings emitted" workplace/cargo-clippy.txt
 cat workplace/cargo-clippy-result.txt
 #cat workplace/cargo-clippy.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # dylint lint检查
 #cargo install cargo-dylint dylint-link
 
 # 检查crate在可执行文件的空间占用百分比
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-bloat： 可执行文件的空间占用百分比\n"
 cat -n workplace/cargo-bloat-crates.txt | grep "File  .text" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-bloat-crates.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 检查各个函数在可执行文件的空间占用百分比
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-bloat： 可执行文件的空间占用百分比\n"
 cat -n workplace/cargo-bloat-func.txt | grep "File  .text" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-bloat-func.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 计算泛型函数所有实例化中LLVM IR的行数
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-llvm-lines： 各函数LLVM IR的行数\n"
 cat -n workplace/cargo-llvm-lines.txt | grep "Lines        Copies" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-llvm-lines.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 显示crates概述信息
 # cargo-modules
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 cat -n workplace/cargo-modules-tree.txt | grep "rust_build_demo1" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-modules-tree.txt"; system(cmd)}'
 cat -n workplace/cargo-modules-graph.txt | grep "digraph" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-modules-graph.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 代码覆盖率检测
 # cargo-tarpaulin
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-tarpaulin： 代码覆盖率\n"
 cat -n workplace/cargo-tarpaulin.txt | grep "Coverage Results:" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-tarpaulin.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 打印汇编代码
 # cargo-asm
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-asm： 汇编代码展示\n"
 cat workplace/cargo-asm.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 格式检查
 # cargo-check
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-check： 格式检查结果\n"
 cat workplace/cargo-check.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # license信息展示
 # cargo-license
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-license： license结果展示\n"
 cat workplace/cargo-license.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 查看依赖crates是否有新的版本
 # cargo-outdated
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-outdated： 查看依赖crates是否有新的版本结果展示\n"
 cat -n workplace/cargo-outdated.txt | grep "Name                                Project" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-outdated.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n"
 
 # 宏展开展示
 # cargo-expand
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-expand： 宏展开结果展示\n"
 cat workplace/cargo-expand.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # cargo deny
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-deny： 源检查结果展示\n"
 cat workplace/cargo-deny-sources.txt
 echo -e "cargo-deny： 禁用crate结果展示\n"
 cat workplace/cargo-deny-bans.txt
 echo -e "cargo-deny： license禁用结果展示\n"
 cat workplace/cargo-deny-license.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # cargo-script
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-script： rust脚本执行结果展示\n"
 cat workplace/cargo-script.txt
+echo -e "-----------------------------------------------------------------------------\n"
 
 # cargo-tomlfmt
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
 echo -e "cargo-tomlfmt： 配置检测结果展示\n"
 cat workplace/cargo-tomlfmt.txt
+echo -e "-----------------------------------------------------------------------------\n"
+
+# cargo-mlc
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
+echo -e "cargo-mlc： 文档链接结果展示\n"
+cat -n workplace/cargo-mlc.txt | grep "Result :" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-mlc.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n"
+
+# cargo-grcov.txt 2>&1
+echo -e "-----------------------------------------------------------------------------\n-----------------------------------------------------------------------------\n"
+echo -e "cargo-grcov： 代码覆盖率结果展示\n"
+cat -n workplace/cargo-grcov.txt | grep "Overall coverage rate" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-grcov.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n"
 ##############################################################################
