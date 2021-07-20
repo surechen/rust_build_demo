@@ -1,143 +1,169 @@
 #!/bin/bash
 # 测试项目: https://github.com/surechen/rust_build_demo/
 echo -e "#####################################环境准备#####################################\n\n\n"
-# 安装rustup
+echo -e "安装rustup\n"
 # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-# 更新rustup
+echo -e "更新rustup\n"
 # rustup update nightly && rustup default nightly
-# 安装rustc-dev，包含hir和ast解析相关的crate
+echo -e "安装 rustc组件\n"
+# rustc-dev，包含hir和ast解析相关的crate
 # 安装rustfmt
 # 安装clippy
 rustup component add rustc-dev rust-src clippy rustfmt miri llvm-tools-preview
+rm -rf workplace
 mkdir workplace
+echo -e "\n\n\n"
 echo -e "#####################################环境准备 end#####################################\n\n\n"
 
 echo -e "####################################依赖检查####################################\n\n\n"
-# crate发布者信息查询，执行慢，暂时关闭
+echo -e "cargo-supply-chain:  crate发布者信息查询，执行慢，暂时关闭\n"
 #cargo install cargo-supply-chain
 #cargo supply-chain update
 #cargo supply-chain crates
 #cargo supply-chain publishers
+echo -e "\n\n\n"
 
-# 统计项目使用到的crates的unsafe代码片段信息
+echo -e "cargo-geiger:  统计项目使用到的crates的unsafe代码片段信息\n"
 # 需要正确安装openssl
 cargo install --locked cargo-geiger
 cargo geiger > workplace/cargo-geiger.txt 2>&1 || true
+echo -e "\n\n\n"
 
-# 跟踪和查询crates依存关系图
+echo -e "cargo-tree:  跟踪和查询crates依存关系图\n"
 cargo install cargo-tree
 cargo tree > workplace/cargo-tree.txt 2>&1
+echo -e "\n\n\n"
 
-# 软件依赖图
+echo -e "cargo-deps:  软件依赖图\n"
 cargo install cargo-deps
 sudo apt install graphviz
 cargo deps --all-deps | dot -Tpng > workplace/cargo-deps.png
+echo -e "\n\n\n"
 
-# 代码行数统计
+echo -e "tokei:  代码行数统计\n"
 cargo install tokei
 tokei > workplace/cargo-tokei.txt 2>&1 || true
+echo -e "\n\n\n"
 
-# 检查Cargo.toml中未使用的依赖
+echo -e "cargo-udeps:  检查Cargo.toml中未使用的依赖\n"
 cargo +stable install cargo-udeps --locked
 cargo +nightly udeps --all-targets > workplace/cargo-udeps.txt 2>&1 || true
+echo -e "\n\n\n"
 
-# 显示crates概述信息
+echo -e "cargo-modules: 显示crates概述信息\n"
 # cargo-modules
 cargo install cargo-modules
 cargo modules generate tree --bin rust_build_demo1 > workplace/cargo-modules-tree.txt 2>&1
 cargo modules generate graph --bin rust_build_demo1 > workplace/cargo-modules-graph.txt 2>&1
+echo -e "\n\n\n"
 
-# license信息展示
+echo -e "cargo-license:  license信息展示\n"
 cargo install cargo-license
 cargo license > workplace/cargo-license.txt 2>&1
 echo -e "####################################依赖检查 end####################################\n\n\n"
+echo -e "\n\n\n"
 
 echo -e "####################################漏洞检查####################################\n\n\n"
 # 拉取advisory-db有时候会失败
-# 从advisory-db搜索并打印项目依赖的crates的漏洞信息
+echo -e "cargo-audit: 从advisory-db搜索并打印项目依赖的crates的漏洞信息\n"
 #cargo +stable install --locked cargo-audit || true
 #mkdir -vp /usr/local/src/rust/advisory-db
 cargo audit --db /usr/local/src/rust/advisory-db --no-fetch > workplace/cargo-audit.txt 2>&1 || true
+echo -e "\n\n\n"
 echo -e "####################################漏洞检查 end####################################\n\n\n"
 
 echo -e "####################################静态检查####################################\n\n\n"
-# 代码格式化检查
+echo -e "cargo fmt: 代码格式化检查\n"
 cargo fmt -- --check > workplace/cargo-check.txt 2>&1 || true
 #cargo  fmt --all
+echo -e "\n\n\n"
 
-# 语法检查
+echo -e "cargo-clippy:  lints检查\n"
 cargo clippy > workplace/cargo-clippy.txt 2>&1 || true
+echo -e "\n\n\n"
 
-# cargo deny配置在deny.toml，根据配置禁用crate，包含crate源位置、license、漏洞
+echo -e "cargo deny:  配置在deny.toml，根据配置禁用crate，包含crate源位置、license、漏洞\n"
 cargo install --locked cargo-deny
 cargo deny check sources > workplace/cargo-deny-sources.txt 2>&1 || true
 cargo deny check bans > workplace/cargo-deny-bans.txt 2>&1 || true
 cargo deny check license > workplace/cargo-deny-license.txt 2>&1 || true
+echo -e "\n\n\n"
 
-# 检查unwrap函数
+echo -e "cargo-strict:  检查unwrap函数\n"
 cargo install --git https://github.com/hhatto/cargo-strict.git || true
 cargo strict > workplace/cargo-strict.txt 2>&1 || true
+echo -e "\n\n\n"
 
-# 检查crate或function占用可执行文件空间百分比
+echo -e "cargo-bloat:  检查crate或function占用可执行文件空间百分比\n"
 cargo install cargo-bloat
 # 检查各个crate在可执行文件的空间占用百分比
 cargo bloat --release --crates > workplace/cargo-bloat-crates.txt 2>&1 || true
 # 检查各个函数在可执行文件的空间占用百分比
 cargo bloat --release -n 30 > workplace/cargo-bloat-func.txt 2>&1 || true
+echo -e "\n\n\n"
 
-# 计算泛型函数所有实例化中LLVM IR的行数
+echo -e "cargo-llvm-lines:  计算泛型函数所有实例化中LLVM IR的行数\n"
 cargo install cargo-llvm-lines
 cargo llvm-lines --bin rust_build_demo1 > workplace/cargo-llvm-lines.txt 2>&1 || true
+echo -e "\n\n\n"
 
-# cargo 依赖的crates是否有新版本
+echo -e "cargo-outdated:  cargo 依赖的crates是否有新版本\n"
 cargo install cargo-outdated || true
 cargo outdated > workplace/cargo-outdated.txt 2>&1 || true
+echo -e "\n\n\n"
 
-# cargo doc中损坏的链接检查
+echo -e "cargo-deadlinks:  cargo doc中损坏的链接检查\n"
 cargo install cargo-deadlinks
 cargo deadlinks
 cargo deadlinks --check-http
+echo -e "\n\n\n"
 
-# 检查损坏的链接
+echo -e "mlc:  检查损坏的链接\n"
 cargo install mlc
 mlc > workplace/cargo-mlc.txt 2>&1
+echo -e "\n\n\n"
 echo -e "####################################静态检查 end####################################\n\n\n"
 
 echo -e "####################################动态检查####################################\n\n\n"
-# 给程序画像
+echo -e "cargo-profiler：  给程序画像\n"
 # 程序画像，根据函数调用和cache访问的信息，分析问题
 # 只限于linux
 sudo apt-get install valgrind
 cargo install cargo-profiler
 cargo profiler callgrind > workplace/cargo-profiler-callgrind.txt 2>&1
 cargo profiler cachegrind --release > workplace/cargo-profiler-cachegrind.txt 2>&1
+echo -e "\n\n\n"
 
-# 构建
+echo -e "cargo build: 构建\n"
 cargo build
+echo -e "\n\n\n"
 
-# sanitizer快速内存错误检测器，能够检测unsafe部分
+echo -e "sanitizer快速内存错误检测器，能够检测unsafe部分\n"
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 # 编译并执行
 cargo run || true
 unset RUSTFLAGS
 unset RUSTDOCFLAGS
+echo -e "\n\n\n"
 echo -e "####################################动态检查 end####################################\n\n\n"
 
 echo -e "####################################测试####################################\n\n\n"
 # 测试检查
-# 代码覆盖率检查
+echo -e "cargo-tarpaulin:  代码覆盖率检查\n"
 # cargo-tarpaulin 只支持x86上的linux系统
 cargo install cargo-tarpaulin
 cargo tarpaulin --all  --all-features > workplace/cargo-tarpaulin.txt 2>&1 || true
+echo -e "\n\n\n"
 
-# 代码覆盖率检查kcov
+echo -e "cargo-kcov:  代码覆盖率检查kcov\n"
 #cargo install cargo-kcov || true
 #sudo apt-get install cmake g++ pkg-config jq libssl-dev
 #sudo apt-get install libcurl4-openssl-dev libelf-dev libdw-dev binutils-dev libiberty-dev
 #cargo kcov --print-install-kcov-sh | sh || true
 cargo kcov
+echo -e "\n\n\n"
 
-# 代码覆盖率
+echo -e "grcov:  代码覆盖率\n"
 # grcov
 cargo install grcov
 # How to generate source-based coverage for a Rust project
@@ -160,13 +186,16 @@ grcov . -s . --binary-path ./target/debug/ -t html --branch --ignore-not-existin
 #genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./target/debug/coverage/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
 # coveralls format
 #grcov . --binary-path ./target/debug/ -t coveralls -s . --token YOUR_COVERALLS_TOKEN > coveralls.json
+unset RUSTFLAGS
+unset RUSTDOCFLAGS
+echo -e "\n\n\n"
 
 # fuzzcheck模糊测试
 # 维护者少，待观察
 #cargo +nightly install cargo-fuzzcheck
 
 # fuzz测试
-# cargo-fuzz模糊测试
+echo -e "cargo-fuzz:  模糊测试\n"
 cargo install cargo-fuzz
 #cargo fuzz init
 #cargo fuzz add build_demo
@@ -175,13 +204,15 @@ cargo fuzz run build_demo || true
 #apt install build-essential binutils-dev libunwind-dev libblocksruntime-dev liblzma-dev
 #cargo install honggfuzz
 #cargo hfuzz run honggfuzz
+echo -e "\n\n\n"
 
-# 性能检测
+echo -e "cargo-benchcmp:  性能检测结果对比\n"
 cargo install cargo-benchcmp
 cargo bench > 1.txt
 # 运用修改
 cargo bench > 2.txt
 cargo benchcmp 1.txt 2.txt
+echo -e "\n\n\n"
 
 # mock测试，已添加代码，可直接使用cargo test执行
 #mockall
@@ -191,8 +222,9 @@ cargo benchcmp 1.txt 2.txt
 #criterion.rs
 
 # 代码中已包含proptest和quickcheck
-# 测试
+echo -e "测试，包含proptest和quickcheck\n"
 cargo test || true
+echo -e "\n\n\n"
 echo -e "####################################测试 end####################################\n\n\n"
 
 echo -e "################################辅助开发和运维工具################################\n\n\n"
@@ -204,9 +236,10 @@ echo -e "################################辅助开发和运维工具############
 #cargo miri run
 #cargo miri test
 
-# 宏展开工具
+echo -e "cargo-expand：  宏展开工具\n"
 cargo install cargo-expand
 cargo expand --bin rust_build_demo1 > workplace/cargo-expand.txt 2>&1
+echo -e "\n\n\n"
 
 # 解开Rust语法糖，查看编译器对代码做了什么
 # 2020年7月后无人工维护
@@ -216,61 +249,74 @@ cargo expand --bin rust_build_demo1 > workplace/cargo-expand.txt 2>&1
 #cargo +nightly install cargo-inspect
 #cargo +nightly inspect
 
-# 更新依赖的crate
+echo -e "cargo-update：  更新依赖的crate\n"
 #cargo install cargo-update
 #cargo update
+echo -e "\n\n\n"
 
-# 打印cargo cache信息
+echo -e "cargo-cache：  打印cargo cache信息\n"
 #cargo install cargo-cache
 #cargo cache
+echo -e "\n\n\n"
 
-# 格式化Cargo.toml检测
+echo -e "cargo-tomlfmt：  格式化Cargo.toml检测\n"
 cargo install cargo-tomlfmt
 cargo tomlfmt > workplace/cargo-tomlfmt.txt 2>&1
+echo -e "\n\n\n"
 
-# 打印Rust代码的汇编或LLVM IR
+echo -e "cargo-asm：  打印Rust代码的汇编或LLVM IR\n"
 cargo install cargo-asm
 cargo asm rust_build_demo1::main --rust > workplace/cargo-asm.txt 2>&1
+echo -e "\n\n\n"
 
-# 一行执行多个命令
+echo -e "cargo-do：  一行执行多个命令\n"
 #cargo install cargo-do
 #cargo do clean, update, build
+echo -e "\n\n\n"
 
-# 从cargo项目创建Debian packages
+echo -e "cargo-deb：  从cargo项目创建Debian packages\n"
 #cargo install cargo-deb
 #cargo deb
+echo -e "\n\n\n"
 
-# 以已有的git项目作为模板创建一个crate
+echo -e "cargo-generate：  以已有的git项目作为模板创建一个crate\n"
 #cargo install cargo-generate
 #cargo generate --git https://github.com/HPCWorkspace/rust_build_demo.git -name rust_build_demo_test
+echo -e "\n\n\n"
 
-# 一条命令操作多个crates
+echo -e "cargo-multi：  一条命令操作多个crates\n"
 #cargo install cargo-multi
 #cargo multi update
 #cargo multi build
 #cargo multi test
+echo -e "\n\n\n"
 
-# 发布新版本
+echo -e "cargo-release：  发布新版本\n"
 #cargo install cargo-release
 # [level](https://github.com/sunng87/cargo-release/blob/master/docs/reference.md)
 #cargo release [level]
+echo -e "\n\n\n"
 
-# 创建crate的rpm版本
+echo -e "cargo-rpm： 创建crate的rpm版本\n"
 # 目前有问题： error: rpmbuild error: error running rpmbuild: No such file or directory (os error 2)
 #cargo rpm init
 #cargo rpm build
+echo -e "\n\n\n"
 
-# 执行rs脚本
+echo -e "cargo-script：  执行rs脚本\n"
 #cargo install cargo-script
 cargo script ./src/toolsbox/cargo-script/helloworld.rs > workplace/cargo-script.txt 2>&1
+echo -e "\n\n\n"
 
-# 文档生成
+echo -e "rustdoc：  文档生成\n"
 # 使用rustdoc
 #cargo doc
+echo -e "\n\n\n"
 
-# 根据.h头文件生成bingding文件
+echo -e "cargo-bindgen：  根据.h头文件生成bingding文件\n"
 #cargo install bindgen
 #bindgen ./toolsbox/bindgen/input.h -o bindings.rs
+echo -e "\n\n\n"
 echo -e "################################辅助开发和运维工具 end################################\n\n\n"
 
 echo -e "#####################################结果展示#####################################\n\n\n"
@@ -426,7 +472,7 @@ echo -e "-----------------------------------------------------------------------
 # cargo-mlc
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 echo -e "cargo-mlc： 文档链接结果展示\n"
-cat -n workplace/cargo-mlc.txt | grep "Result :" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-mlc.txt"; system(cmd)}'
+cat -n workplace/cargo-mlc.txt | grep "Result" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-mlc.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 # cargo-grcov.txt 2>&1
