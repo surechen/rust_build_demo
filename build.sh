@@ -234,7 +234,7 @@ cargo expand --bin rust_build_demo1 > workplace/cargo-expand.txt 2>&1
 cargo install cargo-tomlfmt
 cp ./Cargo.toml ./Cargo_bef.toml
 cargo tomlfmt
-./build/diff.sh ./Cargo.toml ./Cargo_bef.toml
+./build/diff.sh ./Cargo.toml ./Cargo_bef.toml > workplace/cargo-tomlfmt.txt 2>&1
 cp ./Cargo_bef.toml ./Cargo.toml
 rm ./Cargo_bef.toml
 
@@ -272,7 +272,7 @@ cargo asm rust_build_demo1::main --rust > workplace/cargo-asm.txt 2>&1
 
 # 执行rs脚本
 #cargo install cargo-script
-#cargo script ./toolsbox/cargo-script/helloworld.rs
+cargo script ./toolsbox/cargo-script/helloworld.rs > workplace/cargo-script.txt 2>&1
 
 # 文档生成
 # 使用rustdoc
@@ -349,32 +349,47 @@ cat -n workplace/cargo-modules-graph.txt | grep "digraph" | awk '{cmd= "awk \047
 
 # 代码覆盖率检测
 # cargo-tarpaulin
+echo -e "cargo-tarpaulin： 代码覆盖率\n"
 cat -n workplace/cargo-tarpaulin.txt | grep "Coverage Results:" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-tarpaulin.txt"; system(cmd)}'
 
 # 打印汇编代码
 # cargo-asm
+echo -e "cargo-asm： 汇编代码展示\n"
 cat workplace/cargo-asm.txt
 
 # 格式检查
 # cargo-check
+echo -e "cargo-check： 格式检查结果\n"
 cat workplace/cargo-check.txt
 
 # license信息展示
 # cargo-license
+echo -e "cargo-license： license结果展示\n"
 cat workplace/cargo-license.txt
 
 # 查看依赖crates是否有新的版本
 # cargo-outdated
+echo -e "cargo-outdated： 查看依赖crates是否有新的版本结果展示\n"
 cat -n workplace/cargo-outdated.txt | grep "Name                                Project" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-outdated.txt"; system(cmd)}'
 
 # 宏展开展示
 # cargo-expand
+echo -e "cargo-expand： 宏展开结果展示\n"
 cat workplace/cargo-expand.txt
 
 # cargo deny
+echo -e "cargo-deny： 源检查结果展示\n"
 cat workplace/cargo-deny-sources.txt
+echo -e "cargo-deny： 禁用crate结果展示\n"
 cat workplace/cargo-deny-bans.txt
+echo -e "cargo-deny： license禁用结果展示\n"
 cat workplace/cargo-deny-license.txt
 
+# cargo-script
+echo -e "cargo-script： rust脚本执行结果展示\n"
+cat workplace/cargo-script.txt
 
+# cargo-tomlfmt
+echo -e "cargo-tomlfmt： 配置检测结果展示\n"
+cat workplace/cargo-tomlfmt.txt
 ##############################################################################
