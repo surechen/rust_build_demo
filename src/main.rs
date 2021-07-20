@@ -60,7 +60,6 @@ fn parse_date(s: &str) -> Option<(u32, u32, u32)> {
 //     println!("{}", _y)
 // }
 
-
 /// Rust builds the toolchain example
 /// err link for deadlinks:
 /// [`std::future::Futuresss`]
