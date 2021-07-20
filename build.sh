@@ -223,7 +223,7 @@ echo -e "\n\n\n"
 # 代码中已包含proptest和quickcheck
 echo -e "cargo test： 测试\n"
 echo -e "属性测试quickcheck\n"
-echo -e "模糊测试proptest 会报错，影响覆盖率工具，默认注释掉，需要查看请打开注释\n"
+echo -e "属性测试proptest，这个用例设计为会报错，影响tarpaulin等覆盖率工具，默认注释掉，需要尝试请打开注释\n"
 cargo test > workplace/cargo-test.txt 2>&1 || true
 echo -e "\n\n\n"
 echo -e "####################################测试 end####################################\n\n\n"
