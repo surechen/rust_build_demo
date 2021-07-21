@@ -210,10 +210,12 @@ echo -e "\n\n\n"
 
 echo -e "cargo-benchcmp:  性能检测结果对比\n"
 cargo install cargo-benchcmp
+cd benchcmp
 cargo +nightly bench > 1.txt
 # 运用修改
 cargo +nightly bench > 2.txt
-cargo benchcmp 1.txt 2.txt
+cargo benchcmp 1.txt 2.txt > workplace/cargo-benchcmp.txt 2>&1 || true
+cd ..
 echo -e "\n\n\n"
 
 # mock测试，已添加代码，可直接使用cargo test执行
