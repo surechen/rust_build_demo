@@ -210,9 +210,9 @@ echo -e "\n\n\n"
 
 echo -e "cargo-benchcmp:  性能检测结果对比\n"
 cargo install cargo-benchcmp
-cargo bench > 1.txt
+cargo +nightly bench > 1.txt
 # 运用修改
-cargo bench > 2.txt
+cargo +nightly bench > 2.txt
 cargo benchcmp 1.txt 2.txt
 echo -e "\n\n\n"
 
@@ -452,7 +452,7 @@ cat workplace/cargo-expand.txt
 echo -e "-----------------------------------------------------------------------------\n"
 
 # cargo deny
-echo -e "-----------------------------------------------------------------------------\n\n\n"
+echo -e "-----------------------------------------------------------------------------\n"
 echo -e "cargo-deny： 源检查结果展示\n"
 cat workplace/cargo-deny-sources.txt
 echo -e "-----------------------------------------------------------------------------\n\n\n"
