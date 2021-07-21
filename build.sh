@@ -198,7 +198,7 @@ echo -e "cargo-fuzz:  模糊测试\n"
 cargo install cargo-fuzz
 #cargo fuzz init
 #cargo fuzz add build_demo
-cargo fuzz run build_demo || true
+cargo fuzz run build_demo > workplace/cargo-fuzz.txt 2>&1 || true
 echo -e "\n\n\n"
 
 echo -e "honggfuzz模糊测试\n"
@@ -502,5 +502,13 @@ echo -e "-----------------------------------------------------------------------
 echo -e "honggfuzz模糊测试\n"
 cat -n workplace/cargo-honggfuzz.txt | grep "Summary iterations" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-honggfuzz.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# cargo-fuzz
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+echo -e "cargo-fuzz模糊测试\n"
+cat -n workplace/cargo-fuzz.txt | grep "Running" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-fuzz.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+
 
 echo -e "#####################################结果展示 end#####################################\n\n\n"
