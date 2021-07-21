@@ -20,18 +20,21 @@ mod tests {
             xs == reverse(&reverse(&xs))
         }
     }
-
-    //proptest
-    //使用proptest工具测试，这里会发现错误
-    use crate::parse_date;
-    use proptest::prelude::*;
-    proptest! {
-        #[test]
-        fn doesnt_crash(s in "\\PC*") {
-            parse_date(&s);
-        }
-    }
 }
+
+// #[cfg(test)]
+// mod tests {
+//     //proptest
+//     //使用proptest工具测试，这里会发现错误
+//     use crate::parse_date;
+//     use proptest::prelude::*;
+//     proptest! {
+//         #[test]
+//         fn doesnt_crash(s in "\\PC*") {
+//             parse_date(&s);
+//         }
+//     }
+// }
 
 #[allow(dead_code)]
 fn parse_date(s: &str) -> Option<(u32, u32, u32)> {

@@ -198,11 +198,14 @@ echo -e "cargo-fuzz:  模糊测试\n"
 cargo install cargo-fuzz
 #cargo fuzz init
 #cargo fuzz add build_demo
-cargo fuzz run build_demo || true
-# honggfuzz模糊测试
-#apt install build-essential binutils-dev libunwind-dev libblocksruntime-dev liblzma-dev
-#cargo install honggfuzz
-#cargo hfuzz run honggfuzz
+cargo fuzz run build_demo > workplace/cargo-fuzz.txt 2>&1 || true
+echo -e "\n\n\n"
+
+echo -e "honggfuzz模糊测试\n"
+apt install build-essential binutils-dev libunwind-dev libblocksruntime-dev liblzma-dev
+cargo install honggfuzz
+export HFUZZ_RUN_ARGS="-t 20 -n 12 -v -N 10000000 --exit_upon_crash"
+cargo hfuzz run honggfuzz > workplace/cargo-honggfuzz.txt 2>&1 || true
 echo -e "\n\n\n"
 
 echo -e "cargo-benchcmp:  性能检测结果对比\n"
@@ -221,7 +224,9 @@ echo -e "\n\n\n"
 #criterion.rs
 
 # 代码中已包含proptest和quickcheck
-echo -e "测试，包含proptest和quickcheck\n"
+echo -e "cargo test： 测试\n"
+echo -e "属性测试quickcheck\n"
+echo -e "属性测试proptest，这个用例设计为会报错，影响tarpaulin等覆盖率工具，默认注释掉，需要尝试请打开注释\n"
 cargo test > workplace/cargo-test.txt 2>&1 || true
 echo -e "\n\n\n"
 echo -e "####################################测试 end####################################\n\n\n"
@@ -491,6 +496,19 @@ echo -e "-----------------------------------------------------------------------
 echo -e "sanitizer快速内存错误检测器\n"
 cat -n workplace/cargo-sanitizer-run.txt | grep "============================" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer-run.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# honggfuzz
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+echo -e "honggfuzz模糊测试\n"
+cat -n workplace/cargo-honggfuzz.txt | grep "Summary iterations" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-honggfuzz.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# cargo-fuzz
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+echo -e "cargo-fuzz模糊测试\n"
+cat -n workplace/cargo-fuzz.txt | grep "Running" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-fuzz.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
 
 
 echo -e "#####################################结果展示 end#####################################\n\n\n"
