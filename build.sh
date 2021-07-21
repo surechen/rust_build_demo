@@ -198,7 +198,7 @@ echo -e "cargo-fuzz:  模糊测试\n"
 cargo install cargo-fuzz
 #cargo fuzz init
 #cargo fuzz add build_demo
-cargo fuzz run build_demo > workplace/cargo-fuzz.txt 2>&1 || true
+cargo +nightly fuzz run build_demo > workplace/cargo-fuzz.txt 2>&1 || true
 echo -e "\n\n\n"
 
 echo -e "honggfuzz模糊测试\n"
@@ -527,6 +527,12 @@ echo -e "-----------------------------------------------------------------------
 echo -e "-----------------------------------------------------------------------------\n"
 echo -e "cargo miri test 运行结果\n"
 cat workplace/cargo-miri-test.txt
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# benchcmp
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "cargo benchcmp benchmark结果对比\n"
+cat workplace/cargo-benchcmp.txt
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 echo -e "#####################################结果展示 end#####################################\n\n\n"
