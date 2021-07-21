@@ -214,7 +214,7 @@ cd benchcmp
 cargo +nightly bench > 1.txt
 # 运用修改
 cargo +nightly bench > 2.txt
-cargo benchcmp 1.txt 2.txt > workplace/cargo-benchcmp.txt 2>&1 || true
+cargo benchcmp 1.txt 2.txt > ../workplace/cargo-benchcmp.txt 2>&1 || true
 cd ..
 echo -e "\n\n\n"
 
@@ -538,6 +538,7 @@ echo -e "cargo-benchcmp benchmark结果对比\n"
 cat workplace/cargo-benchcmp.txt
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
+# criterion stable benchmark
 echo -e "-----------------------------------------------------------------------------\n"
 echo -e "cargo criterion.rs benchmark\n"
 cat -n workplace/cargo-criterion.txt | grep "criterion benchmark" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-criterion.txt"; system(cmd)}'
