@@ -142,7 +142,7 @@ echo -e "\n\n\n"
 echo -e "sanitizer快速内存错误检测器，能够检测unsafe部分\n"
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 # 编译并执行
-cargo run  > workplace/cargo-sanitizer-run.txt 2>&1 || true
+cargo +nightly run  > workplace/cargo-sanitizer-run.txt 2>&1 || true
 unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
 echo -e "####################################动态检查 end####################################\n\n\n"
