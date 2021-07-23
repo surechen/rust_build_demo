@@ -12,6 +12,7 @@ echo -e "安装 rustc组件\n"
 rustup component add rustc-dev rust-src clippy rustfmt miri llvm-tools-preview
 rm -rf workplace
 mkdir workplace
+unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
 echo -e "#####################################环境准备 end#####################################\n\n\n"
 
