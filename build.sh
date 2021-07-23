@@ -447,7 +447,7 @@ echo -e "-----------------------------------------------------------------------
 # cargo-outdated
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 echo -e "cargo-outdated： 查看依赖crates是否有新的版本结果展示\n"
-cat -n workplace/cargo-outdated.txt | grep "Name                                Project" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-outdated.txt"; system(cmd)}'
+cat -n workplace/cargo-outdated.txt | grep "Name" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-outdated.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n"
 
 # 宏展开展示
