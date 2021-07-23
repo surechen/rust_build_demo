@@ -12,6 +12,7 @@ echo -e "安装 rustc组件\n"
 rustup component add rustc-dev rust-src clippy rustfmt miri llvm-tools-preview
 rm -rf workplace
 mkdir workplace
+unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
 echo -e "#####################################环境准备 end#####################################\n\n\n"
 
@@ -141,7 +142,7 @@ echo -e "\n\n\n"
 echo -e "sanitizer快速内存错误检测器，能够检测unsafe部分\n"
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 # 编译并执行
-cargo run  > workplace/cargo-sanitizer-run.txt 2>&1 || true
+cargo +nightly run  > workplace/cargo-sanitizer-run.txt 2>&1 || true
 unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
 echo -e "####################################动态检查 end####################################\n\n\n"
@@ -214,7 +215,7 @@ cd benchcmp
 cargo +nightly bench > 1.txt
 # 运用修改
 cargo +nightly bench > 2.txt
-cargo benchcmp 1.txt 2.txt > workplace/cargo-benchcmp.txt 2>&1 || true
+cargo benchcmp 1.txt 2.txt > ../workplace/cargo-benchcmp.txt 2>&1 || true
 cd ..
 echo -e "\n\n\n"
 
@@ -222,8 +223,11 @@ echo -e "\n\n\n"
 #mockall
 #mockiato 官方从2019年尾已经不维护了，准备去掉
 
-#benchmark
-#criterion.rs
+#benchmark 可以在stable rustc执行benchmark
+echo -e "cargo test： 测试\n"
+echo -e "criterion.rs benchmark性能测试\n"
+cargo bench > workplace/cargo-criterion.txt 2>&1 || true
+echo -e "\n\n\n"
 
 # 代码中已包含proptest和quickcheck
 echo -e "cargo test： 测试\n"
@@ -443,7 +447,7 @@ echo -e "-----------------------------------------------------------------------
 # cargo-outdated
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 echo -e "cargo-outdated： 查看依赖crates是否有新的版本结果展示\n"
-cat -n workplace/cargo-outdated.txt | grep "Name                                Project" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-outdated.txt"; system(cmd)}'
+cat -n workplace/cargo-outdated.txt | grep "Name" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-outdated.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n"
 
 # 宏展开展示
@@ -531,8 +535,14 @@ echo -e "-----------------------------------------------------------------------
 
 # benchcmp
 echo -e "-----------------------------------------------------------------------------\n"
-echo -e "cargo benchcmp benchmark结果对比\n"
+echo -e "cargo-benchcmp benchmark结果对比\n"
 cat workplace/cargo-benchcmp.txt
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# criterion stable benchmark
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "cargo criterion.rs benchmark\n"
+cat -n workplace/cargo-criterion.txt | grep "criterion benchmark" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-criterion.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 echo -e "#####################################结果展示 end#####################################\n\n\n"
