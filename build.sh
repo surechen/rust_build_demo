@@ -142,7 +142,39 @@ echo -e "\n\n\n"
 echo -e "sanitizer快速内存错误检测器，能够检测unsafe部分\n"
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 # 编译并执行
-cargo +nightly run  > workplace/cargo-sanitizer-run.txt 2>&1 || true
+# AddressSanitizer
+# HWAddressSanitizer
+sanitizer_stack_buffer_overflow_before="//sanitizer_stack_buffer_overflow();"
+sanitizer_stack_buffer_overflow_check="sanitizer_stack_buffer_overflow();"
+sed -i "s:${sanitizer_stack_buffer_overflow_before}:${sanitizer_stack_buffer_overflow_check}:" src/main.rs
+cargo +nightly run  > workplace/cargo-sanitizer_stack_buffer_overflow.txt 2>&1 || true
+sed -i "s:${sanitizer_stack_buffer_overflow_check}:${sanitizer_stack_buffer_overflow_before}:" src/main.rs
+
+sanitizer_stack_use_after_scope_before="//sanitizer_stack_use_after_scope();"
+sanitizer_stack_use_after_scope_check="sanitizer_stack_use_after_scope();"
+sed -i "s:${sanitizer_stack_use_after_scope_before}:${sanitizer_stack_use_after_scope_check}:" src/main.rs
+cargo +nightly run  > workplace/cargo-sanitizer_stack_use_after_scope.txt 2>&1 || true
+sed -i "s:${sanitizer_stack_use_after_scope_check}:${sanitizer_stack_use_after_scope_before}:" src/main.rs
+
+# LeakSanitizer待补充
+
+# MemorySanitizer
+export RUSTFLAGS='-Zsanitizer=memory -Zsanitizer-memory-track-origins'
+export RUSTDOCFLAGS='-Zsanitizer=memory -Zsanitizer-memory-track-origins'
+sanitizer_use_of_uninitialized_value_before="//sanitizer_use_of_uninitialized_value();"
+sanitizer_use_of_uninitialized_value_check="sanitizer_use_of_uninitialized_value();"
+sed -i "s:${sanitizer_use_of_uninitialized_value_before}:${sanitizer_use_of_uninitialized_value_check}:" src/main.rs
+cargo +nightly run  > workplace/cargo-sanitizer_use_of_uninitialized_value.txt 2>&1 || true
+sed -i "s:${sanitizer_use_of_uninitialized_value_check}:${sanitizer_use_of_uninitialized_value_before}:" src/main.rs
+
+# ThreadSanitizer
+export RUSTFLAGS=-Zsanitizer=thread RUSTDOCFLAGS=-Zsanitizer=thread
+sanitizer_data_race_before="//sanitizer_data_race();"
+sanitizer_data_race_check="sanitizer_data_race();"
+sed -i "s:${sanitizer_data_race_before}:${sanitizer_data_race_check}:" src/main.rs
+cargo +nightly run -Zbuild-std --target x86_64-unknown-linux-gnu  > workplace/cargo-sanitizer_data_race.txt 2>&1 || true
+sed -i "s:${sanitizer_data_race_check}:${sanitizer_data_race_before}:" src/main.rs
+
 unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
 echo -e "####################################动态检查 end####################################\n\n\n"
@@ -242,7 +274,6 @@ echo -e "################################辅助开发和运维工具############
 #cargo fix
 
 # 运行miri检测
-#rustup +nightly component add miri
 cargo +nightly miri run > workplace/cargo-miri-run.txt 2>&1 || true
 cargo +nightly miri test > workplace/cargo-miri-test.txt 2>&1 || true
 
@@ -255,7 +286,6 @@ echo -e "\n\n\n"
 # 2020年7月后无人工维护
 # 需要使用nightly
 #rustup install nightly
-#rustup +nightly component add rustfmt
 #cargo +nightly install cargo-inspect
 #cargo +nightly inspect
 
@@ -505,8 +535,23 @@ echo -e "-----------------------------------------------------------------------
 
 # sanitizer
 echo -e "-----------------------------------------------------------------------------\n"
-echo -e "sanitizer快速内存错误检测器\n"
-cat -n workplace/cargo-sanitizer-run.txt | grep "============================" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer-run.txt"; system(cmd)}'
+echo -e "sanitizer快速内存错误检测器:stack_buffer_overflow\n"
+cat -n workplace/cargo-sanitizer_stack_buffer_overflow.txt | grep "============================" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer_stack_buffer_overflow.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "sanitizer快速内存错误检测器:sanitizer_stack_use_after_scope\n"
+cat -n workplace/cargo-sanitizer_stack_use_after_scope.txt | grep "============================" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer_stack_use_after_scope.txt"; system(cmd)}'
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "sanitizer快速内存错误检测器:sanitizer_use_of_uninitialized_value\n"
+cat workplace/cargo-sanitizer_use_of_uninitialized_value.txt
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "sanitizer快速内存错误检测器:sanitizer_data_race\n"
+cat -n workplace/cargo-sanitizer_data_race.txt | grep "==================" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer_data_race.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 # honggfuzz
