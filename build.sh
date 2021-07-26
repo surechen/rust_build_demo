@@ -242,7 +242,6 @@ echo -e "################################辅助开发和运维工具############
 #cargo fix
 
 # 运行miri检测
-#rustup +nightly component add miri
 cargo +nightly miri run > workplace/cargo-miri-run.txt 2>&1 || true
 cargo +nightly miri test > workplace/cargo-miri-test.txt 2>&1 || true
 
@@ -255,7 +254,6 @@ echo -e "\n\n\n"
 # 2020年7月后无人工维护
 # 需要使用nightly
 #rustup install nightly
-#rustup +nightly component add rustfmt
 #cargo +nightly install cargo-inspect
 #cargo +nightly inspect
 
