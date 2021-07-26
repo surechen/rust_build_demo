@@ -463,17 +463,23 @@ cargo profiler cachegrind --release
 
 ![avatar](./images/cargo-profiler-cachegrind.png)
 
-### 19.cargo-tree
+### 19.sanitizer
 
-##### 2.3.1功能：
+##### 2.19.1功能：
+
+引用：https://doc.rust-lang.org/unstable-book/compiler-flags/sanitizer.html
+
+- [AddressSanitizer](https://clang.llvm.org/docs/AddressSanitizer.html)一个快速内存错误检测器。
+- [HWAddressSanitizer](https://clang.llvm.org/docs/HardwareAssistedAddressSanitizerDesign.html)类似于 AddressSanitizer 的内存错误检测器，但基于部分硬件辅助。
+- [LeakSanitizer](https://clang.llvm.org/docs/LeakSanitizer.html)一个运行时内存泄漏检测器。
+- [MemorySanitizer](https://clang.llvm.org/docs/MemorySanitizer.html)未初始化读取检测器。
+- [ThreadSanitizer](https://clang.llvm.org/docs/ThreadSanitizer.html)一个快速的数据竞争检测器。
+
+##### 2.19.2原理简析：
 
 
 
-##### 2.3.2原理简析：
-
-
-
-##### 2.3.3结果展示：
+##### 2.19.3结果展示：
 
 ### 3.cargo-tree
 
