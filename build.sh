@@ -38,7 +38,12 @@ echo -e "\n\n\n"
 echo -e "cargo-deps:  软件依赖图\n"
 cargo install cargo-deps
 sudo apt install graphviz
-cargo deps --all-deps | dot -Tpng > workplace/cargo-deps.png
+cargo deps --all-deps | dot -Tpng > workplace/cargo-deps.png || true
+echo -e "\n\n\n"
+
+echo -e "cargo-depgraph:  软件依赖图\n"
+# cargo install cargo-depgraph
+cargo depgraph --all-deps | dot -Tpng > workplace/cargo-depgraph.png || true
 echo -e "\n\n\n"
 
 echo -e "tokei:  代码行数统计\n"
@@ -123,6 +128,8 @@ echo -e "mlc:  检查损坏的链接\n"
 cargo install mlc
 mlc > workplace/cargo-mlc.txt 2>&1
 echo -e "\n\n\n"
+
+# cargo-spellcheck 待补充
 echo -e "####################################静态检查 end####################################\n\n\n"
 
 echo -e "####################################动态检查####################################\n\n\n"
@@ -177,7 +184,27 @@ sed -i "s:${sanitizer_data_race_check}:${sanitizer_data_race_before}:" src/main.
 
 unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
+
+#rust-semverver
+
+
 echo -e "####################################动态检查 end####################################\n\n\n"
+
+echo -e "####################################度量####################################\n\n\n"
+
+echo -e "rust-code-analysis:  代码度量\n"
+#git clone https://github.com/mozilla/rust-code-analysis
+#cd rust-code-analysis
+#cargo build --workspace
+#cp ./target/debug/rust-code-analysis-cli /usr/local/bin/rust-code-analysis-cli
+#cd ..
+build_demo_path=`pwd`
+#echo ${build_demo_path}
+# json toml cbor yaml
+rust-code-analysis-cli -m -O yaml  -p ${build_demo_path}/src  > workplace/cargo-rust-code-analysis.txt 2>&1 || true
+echo -e "\n\n\n"
+
+echo -e "####################################度量 end####################################\n\n\n"
 
 echo -e "####################################测试####################################\n\n\n"
 # 测试检查
@@ -590,4 +617,21 @@ echo -e "cargo criterion.rs benchmark\n"
 cat -n workplace/cargo-criterion.txt | grep "criterion benchmark" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-criterion.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
+# rust-code-analysis
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "rust-code-analysis:代码度量\n"
+cat workplace/cargo-rust-code-analysis.txt
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# cargo-spellcheck
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "cargo-spellcheck:\n"
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# rust-semverver
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "rust-semverver:\n"
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
 echo -e "#####################################结果展示 end#####################################\n\n\n"
+
