@@ -138,7 +138,7 @@ echo -e "\n\n\n"
 
 echo -e "mlc:  检查损坏的链接\n"
 cargo install mlc
-mlc > workplace/cargo-mlc.txt 2>&1
+mlc > workplace/cargo-mlc.txt 2>&1 || true
 echo -e "\n\n\n"
 
 # cargo-spellcheck 待补充
