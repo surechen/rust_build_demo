@@ -51,6 +51,14 @@ cargo install tokei
 tokei > workplace/cargo-tokei.txt 2>&1 || true
 echo -e "\n\n\n"
 
+echo -e "cargo-count:  代码行数统计\n"
+#git clone https://github.com/kbknapp/cargo-count && cd cargo-count
+#cargo build
+#cp ./target/debug/cargo-count /root/.cargo/bin/cargo-count
+#cd ..
+cargo count --separator , --unsafe-statistics > workplace/cargo-count.txt 2>&1 || true
+echo -e "\n\n\n"
+
 echo -e "cargo-udeps:  检查Cargo.toml中未使用的依赖\n"
 cargo +stable install cargo-udeps --locked
 cargo +nightly udeps --all-targets > workplace/cargo-udeps.txt 2>&1 || true
@@ -59,8 +67,9 @@ echo -e "\n\n\n"
 echo -e "cargo-modules: 显示crates概述信息\n"
 # cargo-modules
 cargo install cargo-modules
-cargo modules generate tree --bin rust_build_demo1 > workplace/cargo-modules-tree.txt 2>&1
-cargo modules generate graph --bin rust_build_demo1 > workplace/cargo-modules-graph.txt 2>&1
+cargo modules generate tree --all-features --bin rust_build_demo1 > workplace/cargo-modules-tree.txt 2>&1
+cargo modules generate graph --all-features --bin rust_build_demo1 | dot -Tpng > workplace/cargo-modules-graph.png
+#cargo modules generate graph --bin rust_build_demo1 > workplace/cargo-modules-graph.txt 2>&1
 echo -e "\n\n\n"
 
 echo -e "cargo-license:  license信息展示\n"
@@ -424,6 +433,13 @@ echo -e "-----------------------------------------------------------------------
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 echo -e "cargo-tokei：代码行数统计\n"
 cat workplace/cargo-tokei.txt
+echo -e "-----------------------------------------------------------------------------\n"
+
+# 代码行统计
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+echo -e "cargo-count：代码行数统计\n"
+#cargo count --separator , --unsafe-statistics
+cat workplace/cargo-count.txt
 echo -e "-----------------------------------------------------------------------------\n"
 
 # 检查unwrap函数
