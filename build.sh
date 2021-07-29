@@ -84,6 +84,9 @@ echo -e "cargo-audit: 从advisory-db搜索并打印项目依赖的crates的漏�
 #cargo +stable install --locked cargo-audit || true
 #mkdir -vp /usr/local/src/rust/advisory-db
 cargo audit --db /usr/local/src/rust/advisory-db --no-fetch > workplace/cargo-audit.txt 2>&1 || true
+#cargo install cargo-audit --features=fix
+#cargo audit fix --dry-run
+#cargo audit fix
 echo -e "\n\n\n"
 echo -e "####################################漏洞检查 end####################################\n\n\n"
 
@@ -228,7 +231,7 @@ echo -e "cargo-kcov:  代码覆盖率检查kcov\n"
 #sudo apt-get install cmake g++ pkg-config jq libssl-dev
 #sudo apt-get install libcurl4-openssl-dev libelf-dev libdw-dev binutils-dev libiberty-dev
 #cargo kcov --print-install-kcov-sh | sh || true
-cargo kcov
+cargo kcov || true
 echo -e "\n\n\n"
 
 echo -e "grcov:  代码覆盖率\n"
@@ -337,7 +340,7 @@ echo -e "\n\n\n"
 
 echo -e "cargo-tomlfmt：  格式化Cargo.toml检测\n"
 cargo install cargo-tomlfmt
-cargo tomlfmt > workplace/cargo-tomlfmt.txt 2>&1
+cargo tomlfmt > workplace/cargo-tomlfmt.txt 2>&1 || true
 echo -e "\n\n\n"
 
 echo -e "cargo-asm：  打印Rust代码的汇编或LLVM IR\n"
