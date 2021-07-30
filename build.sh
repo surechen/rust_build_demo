@@ -325,7 +325,7 @@ echo -e "\n\n\n"
 # 2020年7月后无人工维护
 # 需要使用nightly
 #cargo install cargo-inspect
-#cargo inspect ./src/toolsbox/toolinspect/toolinspect.rs
+#cargo inspect ./src/toolsbox/toolinspect/toolinspect.rs > workplace/cargo-inspect.txt 2>&1
 
 echo -e "cargo-update：  更新依赖的crate\n"
 #cargo install cargo-update
@@ -639,6 +639,12 @@ echo -e "-----------------------------------------------------------------------
 echo -e "-----------------------------------------------------------------------------\n"
 echo -e "rust-code-analysis:代码度量\n"
 cat workplace/cargo-rust-code-analysis.txt
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# cargo-inspect
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "cargo-inspect:解开语法糖\n"
+cat workplace/cargo-inspect.txt
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 # cargo-spellcheck
