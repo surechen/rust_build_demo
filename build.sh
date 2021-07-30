@@ -344,7 +344,8 @@ echo -e "\n\n\n"
 
 echo -e "cargo-asm：  打印Rust代码的汇编或LLVM IR\n"
 cargo install cargo-asm
-cargo asm rust_build_demo1::main --rust > workplace/cargo-asm.txt 2>&1
+cargo asm rust_build_demo1::main --rust > workplace/cargo-asm-asm.txt 2>&1
+cargo llvm-ir rust_build_demo1::main --rust > workplace/cargo-asm-llvm.txt 2>&1
 echo -e "\n\n\n"
 
 echo -e "cargo-do：  一行执行多个命令\n"
@@ -501,7 +502,8 @@ echo -e "-----------------------------------------------------------------------
 # cargo-asm
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 echo -e "cargo-asm： 汇编代码展示\n"
-cat workplace/cargo-asm.txt
+cat workplace/cargo-asm-asm.txt
+cat workplace/cargo-asm-llvm.txt
 echo -e "-----------------------------------------------------------------------------\n"
 
 # 格式检查
