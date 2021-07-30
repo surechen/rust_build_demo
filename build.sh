@@ -324,9 +324,8 @@ echo -e "\n\n\n"
 # 解开Rust语法糖，查看编译器对代码做了什么
 # 2020年7月后无人工维护
 # 需要使用nightly
-#rustup install nightly
-#cargo +nightly install cargo-inspect
-#cargo +nightly inspect
+#cargo install cargo-inspect
+#cargo inspect ./src/toolsbox/toolinspect/toolinspect.rs
 
 echo -e "cargo-update：  更新依赖的crate\n"
 #cargo install cargo-update

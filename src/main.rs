@@ -116,11 +116,13 @@ fn main() {
         println!("r1 is: {}", *p1);
         println!("r2 is: {}", *p2);
     }
+    {
+        use dangerous::*;
+        let input = dangerous::input(b"hello");
+        let result: Result<_, Invalid> = input.read_partial(|r| r.read_u8());
+        assert_eq!(result, Ok((b'h', dangerous::input(b"ello"))));
 
-    use dangerous::*;
-    let input = dangerous::input(b"hello");
-    let result: Result<_, Invalid> = input.read_partial(|r| r.read_u8());
-    assert_eq!(result, Ok((b'h', dangerous::input(b"ello"))));
+    }
 
     // let s = "Hello world";  /* .unwrap() */
     // let _ = s.find("wo").unwrap();
