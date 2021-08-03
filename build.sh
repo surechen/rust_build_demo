@@ -51,6 +51,14 @@ cargo install tokei
 tokei > workplace/cargo-tokei.txt 2>&1 || true
 echo -e "\n\n\n"
 
+echo -e "cargo-count:  代码行数统计\n"
+#git clone https://github.com/kbknapp/cargo-count && cd cargo-count
+#cargo build
+#cp ./target/debug/cargo-count /root/.cargo/bin/cargo-count
+#cd ..
+cargo count --separator , --unsafe-statistics > workplace/cargo-count.txt 2>&1 || true
+echo -e "\n\n\n"
+
 echo -e "cargo-udeps:  检查Cargo.toml中未使用的依赖\n"
 cargo +stable install cargo-udeps --locked
 cargo +nightly udeps --all-targets > workplace/cargo-udeps.txt 2>&1 || true
@@ -59,8 +67,9 @@ echo -e "\n\n\n"
 echo -e "cargo-modules: 显示crates概述信息\n"
 # cargo-modules
 cargo install cargo-modules
-cargo modules generate tree --bin rust_build_demo1 > workplace/cargo-modules-tree.txt 2>&1
-cargo modules generate graph --bin rust_build_demo1 > workplace/cargo-modules-graph.txt 2>&1
+cargo modules generate tree --all-features --bin rust_build_demo1 > workplace/cargo-modules-tree.txt 2>&1
+cargo modules generate graph --all-features --bin rust_build_demo1 | dot -Tpng > workplace/cargo-modules-graph.png
+#cargo modules generate graph --bin rust_build_demo1 > workplace/cargo-modules-graph.txt 2>&1
 echo -e "\n\n\n"
 
 echo -e "cargo-license:  license信息展示\n"
@@ -75,6 +84,9 @@ echo -e "cargo-audit: 从advisory-db搜索并打印项目依赖的crates的漏�
 #cargo +stable install --locked cargo-audit || true
 #mkdir -vp /usr/local/src/rust/advisory-db
 cargo audit --db /usr/local/src/rust/advisory-db --no-fetch > workplace/cargo-audit.txt 2>&1 || true
+#cargo install cargo-audit --features=fix
+#cargo audit fix --dry-run
+#cargo audit fix
 echo -e "\n\n\n"
 echo -e "####################################漏洞检查 end####################################\n\n\n"
 
@@ -126,7 +138,7 @@ echo -e "\n\n\n"
 
 echo -e "mlc:  检查损坏的链接\n"
 cargo install mlc
-mlc > workplace/cargo-mlc.txt 2>&1
+mlc > workplace/cargo-mlc.txt 2>&1 || true
 echo -e "\n\n\n"
 
 # cargo-spellcheck 待补充
@@ -219,7 +231,7 @@ echo -e "cargo-kcov:  代码覆盖率检查kcov\n"
 #sudo apt-get install cmake g++ pkg-config jq libssl-dev
 #sudo apt-get install libcurl4-openssl-dev libelf-dev libdw-dev binutils-dev libiberty-dev
 #cargo kcov --print-install-kcov-sh | sh || true
-cargo kcov
+cargo kcov || true
 echo -e "\n\n\n"
 
 echo -e "grcov:  代码覆盖率\n"
@@ -310,11 +322,10 @@ cargo expand --bin rust_build_demo1 > workplace/cargo-expand.txt 2>&1
 echo -e "\n\n\n"
 
 # 解开Rust语法糖，查看编译器对代码做了什么
-# 2020年7月后无人工维护
+# 2020年7月后无人工维护，实际测试中发现对2018版本的项目不能正确分析
 # 需要使用nightly
-#rustup install nightly
-#cargo +nightly install cargo-inspect
-#cargo +nightly inspect
+#cargo install cargo-inspect
+#cargo inspect ./src/toolsbox/toolinspect/toolinspect.rs > workplace/cargo-inspect.txt 2>&1
 
 echo -e "cargo-update：  更新依赖的crate\n"
 #cargo install cargo-update
@@ -328,12 +339,13 @@ echo -e "\n\n\n"
 
 echo -e "cargo-tomlfmt：  格式化Cargo.toml检测\n"
 cargo install cargo-tomlfmt
-cargo tomlfmt > workplace/cargo-tomlfmt.txt 2>&1
+cargo tomlfmt > workplace/cargo-tomlfmt.txt 2>&1 || true
 echo -e "\n\n\n"
 
 echo -e "cargo-asm：  打印Rust代码的汇编或LLVM IR\n"
 cargo install cargo-asm
-cargo asm rust_build_demo1::main --rust > workplace/cargo-asm.txt 2>&1
+cargo asm rust_build_demo1::main --rust > workplace/cargo-asm-asm.txt 2>&1
+cargo llvm-ir rust_build_demo1::main --rust > workplace/cargo-asm-llvm.txt 2>&1
 echo -e "\n\n\n"
 
 echo -e "cargo-do：  一行执行多个命令\n"
@@ -382,7 +394,7 @@ echo -e "\n\n\n"
 
 echo -e "cargo-bindgen：  根据.h头文件生成bingding文件\n"
 #cargo install bindgen
-#bindgen ./toolsbox/bindgen/input.h -o bindings.rs
+#bindgen ./src/toolsbox/bindgen/input.h -o bindings.rs
 echo -e "\n\n\n"
 echo -e "################################辅助开发和运维工具 end################################\n\n\n"
 
@@ -417,13 +429,20 @@ echo -e "-----------------------------------------------------------------------
 # 统计unsafe代码片段信息
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 echo -e "cargo-geiger：unsafe代码片段检测\n"
-cat workplace/cargo-geiger.txt
+cat -n workplace/cargo-geiger.txt | grep "Metric" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-geiger.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n"
 
 # 代码行数统计
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 echo -e "cargo-tokei：代码行数统计\n"
 cat workplace/cargo-tokei.txt
+echo -e "-----------------------------------------------------------------------------\n"
+
+# 代码行统计
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+echo -e "cargo-count：代码行数统计\n"
+#cargo count --separator , --unsafe-statistics
+cat workplace/cargo-count.txt
 echo -e "-----------------------------------------------------------------------------\n"
 
 # 检查unwrap函数
@@ -483,7 +502,8 @@ echo -e "-----------------------------------------------------------------------
 # cargo-asm
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 echo -e "cargo-asm： 汇编代码展示\n"
-cat workplace/cargo-asm.txt
+cat workplace/cargo-asm-asm.txt
+cat workplace/cargo-asm-llvm.txt
 echo -e "-----------------------------------------------------------------------------\n"
 
 # 格式检查
@@ -621,6 +641,12 @@ echo -e "-----------------------------------------------------------------------
 echo -e "-----------------------------------------------------------------------------\n"
 echo -e "rust-code-analysis:代码度量\n"
 cat workplace/cargo-rust-code-analysis.txt
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# cargo-inspect
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "cargo-inspect:解开语法糖\n"
+cat workplace/cargo-inspect.txt
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 # cargo-spellcheck
