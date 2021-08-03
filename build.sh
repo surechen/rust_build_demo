@@ -6,6 +6,9 @@ echo -e "安装rustup\n"
 echo -e "更新rustup\n"
 # rustup update nightly && rustup default nightly
 echo -e "安装 rustc组件\n"
+# rustup 代理
+#export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+#export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
 # rustc-dev，包含hir和ast解析相关的crate
 # 安装rustfmt
 # 安装clippy
@@ -141,7 +144,10 @@ cargo install mlc
 mlc > workplace/cargo-mlc.txt 2>&1 || true
 echo -e "\n\n\n"
 
-# cargo-spellcheck 待补充
+echo -e "cargo-spellcheck: 检查拼写或语法错误\n"
+cargo spellcheck check > workplace/cargo-spellcheck.txt 2>&1 || true
+echo -e "\n\n\n"
+
 echo -e "####################################静态检查 end####################################\n\n\n"
 
 echo -e "####################################动态检查####################################\n\n\n"
@@ -198,7 +204,9 @@ unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
 
 #rust-semverver
-
+#rustup install nightly-2021-07-23
+#rustup component add rustc-dev llvm-tools-preview --toolchain nightly-2021-07-23
+#cargo +nightly-2021-07-23 install --git https://github.com/rust-lang/rust-semverver
 
 echo -e "####################################动态检查 end####################################\n\n\n"
 
@@ -651,7 +659,8 @@ echo -e "-----------------------------------------------------------------------
 
 # cargo-spellcheck
 echo -e "-----------------------------------------------------------------------------\n"
-echo -e "cargo-spellcheck:\n"
+echo -e "cargo-spellcheck:检查拼写或语法错误\n"
+cat workplace/cargo-spellcheck.txt
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 # rust-semverver
