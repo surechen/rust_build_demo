@@ -322,7 +322,7 @@ cargo expand --bin rust_build_demo1 > workplace/cargo-expand.txt 2>&1
 echo -e "\n\n\n"
 
 # 解开Rust语法糖，查看编译器对代码做了什么
-# 2020年7月后无人工维护
+# 2020年7月后无人工维护，实际测试中发现对2018版本的项目不能正确分析
 # 需要使用nightly
 #cargo install cargo-inspect
 #cargo inspect ./src/toolsbox/toolinspect/toolinspect.rs > workplace/cargo-inspect.txt 2>&1
@@ -394,7 +394,7 @@ echo -e "\n\n\n"
 
 echo -e "cargo-bindgen：  根据.h头文件生成bingding文件\n"
 #cargo install bindgen
-#bindgen ./toolsbox/bindgen/input.h -o bindings.rs
+#bindgen ./src/toolsbox/bindgen/input.h -o bindings.rs
 echo -e "\n\n\n"
 echo -e "################################辅助开发和运维工具 end################################\n\n\n"
 
@@ -429,7 +429,7 @@ echo -e "-----------------------------------------------------------------------
 # 统计unsafe代码片段信息
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 echo -e "cargo-geiger：unsafe代码片段检测\n"
-cat workplace/cargo-geiger.txt
+cat -n workplace/cargo-geiger.txt | grep "Metric" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-geiger.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n"
 
 # 代码行数统计
