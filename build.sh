@@ -29,7 +29,9 @@ echo -e "\n\n\n"
 
 echo -e "cargo-geiger:  统计项目使用到的crates的unsafe代码片段信息\n"
 # 需要正确安装openssl
-cargo install --locked cargo-geiger
+#cargo install --locked cargo-geiger
+rm -rf ./target/
+cargo install cargo-geiger --features vendored-openssl
 cargo geiger > workplace/cargo-geiger.txt 2>&1 || true
 echo -e "\n\n\n"
 
@@ -165,23 +167,27 @@ cargo build
 echo -e "\n\n\n"
 
 echo -e "sanitizer快速内存错误检测器，能够检测unsafe部分\n"
-export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 # 编译并执行
 # AddressSanitizer
 # HWAddressSanitizer
+export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 sanitizer_stack_buffer_overflow_before="//sanitizer_stack_buffer_overflow();"
 sanitizer_stack_buffer_overflow_check="sanitizer_stack_buffer_overflow();"
 sed -i "s:${sanitizer_stack_buffer_overflow_before}:${sanitizer_stack_buffer_overflow_check}:" src/main.rs
-cargo +nightly run  > workplace/cargo-sanitizer_stack_buffer_overflow.txt 2>&1 || true
+cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer_stack_buffer_overflow.txt 2>&1 || true
 sed -i "s:${sanitizer_stack_buffer_overflow_check}:${sanitizer_stack_buffer_overflow_before}:" src/main.rs
 
+export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 sanitizer_stack_use_after_scope_before="//sanitizer_stack_use_after_scope();"
 sanitizer_stack_use_after_scope_check="sanitizer_stack_use_after_scope();"
 sed -i "s:${sanitizer_stack_use_after_scope_before}:${sanitizer_stack_use_after_scope_check}:" src/main.rs
-cargo +nightly run  > workplace/cargo-sanitizer_stack_use_after_scope.txt 2>&1 || true
+cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer_stack_use_after_scope.txt 2>&1 || true
 sed -i "s:${sanitizer_stack_use_after_scope_check}:${sanitizer_stack_use_after_scope_before}:" src/main.rs
 
 # LeakSanitizer待补充
+export RUSTFLAGS='-Zsanitizer=leak'
+export RUSTDOCFLAGS='-Zsanitizer=leak'
+
 
 # MemorySanitizer
 export RUSTFLAGS='-Zsanitizer=memory -Zsanitizer-memory-track-origins'
@@ -189,7 +195,7 @@ export RUSTDOCFLAGS='-Zsanitizer=memory -Zsanitizer-memory-track-origins'
 sanitizer_use_of_uninitialized_value_before="//sanitizer_use_of_uninitialized_value();"
 sanitizer_use_of_uninitialized_value_check="sanitizer_use_of_uninitialized_value();"
 sed -i "s:${sanitizer_use_of_uninitialized_value_before}:${sanitizer_use_of_uninitialized_value_check}:" src/main.rs
-cargo +nightly run  > workplace/cargo-sanitizer_use_of_uninitialized_value.txt 2>&1 || true
+cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer_use_of_uninitialized_value.txt 2>&1 || true
 sed -i "s:${sanitizer_use_of_uninitialized_value_check}:${sanitizer_use_of_uninitialized_value_before}:" src/main.rs
 
 # ThreadSanitizer
@@ -203,10 +209,12 @@ sed -i "s:${sanitizer_data_race_check}:${sanitizer_data_race_before}:" src/main.
 unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
 
-#rust-semverver
+echo -e "rust-semverver:  合规性检查\n"
 #rustup install nightly-2021-07-23
 #rustup component add rustc-dev llvm-tools-preview --toolchain nightly-2021-07-23
 #cargo +nightly-2021-07-23 install --git https://github.com/rust-lang/rust-semverver
+#cargo +nightly-2021-07-23 semver
+echo -e "\n\n\n"
 
 echo -e "####################################动态检查 end####################################\n\n\n"
 
@@ -246,7 +254,8 @@ echo -e "grcov:  代码覆盖率\n"
 # grcov
 #cargo install grcov
 # How to generate source-based coverage for a Rust project
-#export RUSTFLAGS="-Zinstrument-coverage"
+export RUSTFLAGS="-Zinstrument-coverage"
+rustup default nightly
 #cargo build
 #export LLVM_PROFILE_FILE="your_name-%p-%m.profraw"
 #cargo test
@@ -261,12 +270,12 @@ echo -e "grcov:  代码覆盖率\n"
 # the report in target/debug/coverage/index.html
 # for lcov
 # apt-get install lcov
-grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/coverage/lcov.info
-genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./target/debug/coverage/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
+grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./workplace/lcov.info
+genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./workplace/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
+rustup default stable
 # coveralls format
 #grcov . --binary-path ./target/debug/ -t coveralls -s . --token YOUR_COVERALLS_TOKEN > coveralls.json
-#unset RUSTFLAGS
-#unset RUSTDOCFLAGS
+unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
 
 # fuzzcheck模糊测试
@@ -305,7 +314,8 @@ echo -e "\n\n\n"
 #benchmark 可以在stable rustc执行benchmark
 echo -e "cargo test： 测试\n"
 echo -e "criterion.rs benchmark性能测试\n"
-cargo bench > workplace/cargo-criterion.txt 2>&1 || true
+unset RUSTFLAGS RUSTDOCFLAGS
+cargo +stable bench > workplace/cargo-criterion.txt 2>&1 || true
 echo -e "\n\n\n"
 
 # 代码中已包含proptest和quickcheck
@@ -321,6 +331,8 @@ echo -e "################################辅助开发和运维工具############
 #cargo fix
 
 # 运行miri检测
+rustup +nightly component add miri
+unset RUSTFLAGS RUSTDOCFLAGS
 cargo +nightly miri run > workplace/cargo-miri-run.txt 2>&1 || true
 cargo +nightly miri test > workplace/cargo-miri-test.txt 2>&1 || true
 
@@ -648,7 +660,7 @@ echo -e "-----------------------------------------------------------------------
 # rust-code-analysis
 echo -e "-----------------------------------------------------------------------------\n"
 echo -e "rust-code-analysis:代码度量\n"
-cat workplace/cargo-rust-code-analysis.txt
+tail -n 43 workplace/cargo-rust-code-analysis.txt
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 # cargo-inspect
