@@ -137,8 +137,8 @@ echo -e "\n\n\n"
 
 echo -e "cargo-deadlinks:  cargo doc中损坏的链接检查\n"
 cargo install cargo-deadlinks
-cargo deadlinks
-cargo deadlinks --check-http
+cargo deadlinks > workplace/cargo-deadlinks.txt 2>&1 || true
+#cargo deadlinks --check-http
 echo -e "\n\n\n"
 
 echo -e "mlc:  检查损坏的链接\n"
@@ -163,7 +163,7 @@ cargo profiler cachegrind --release > workplace/cargo-profiler-cachegrind.txt 2>
 echo -e "\n\n\n"
 
 echo -e "cargo build: 构建\n"
-cargo build
+cargo build > workplace/cargo-build.txt 2>&1
 echo -e "\n\n\n"
 
 echo -e "sanitizer快速内存错误检测器，能够检测unsafe部分\n"
@@ -254,8 +254,11 @@ echo -e "grcov:  代码覆盖率\n"
 # grcov
 #cargo install grcov
 # How to generate source-based coverage for a Rust project
+# 需要重新使用nightly版编译
+unset RUSTFLAGS RUSTDOCFLAGS
 export RUSTFLAGS="-Zinstrument-coverage"
 rustup default nightly
+cargo build > /dev/null 2>&1
 #cargo build
 #export LLVM_PROFILE_FILE="your_name-%p-%m.profraw"
 #cargo test
@@ -270,11 +273,12 @@ rustup default nightly
 # the report in target/debug/coverage/index.html
 # for lcov
 # apt-get install lcov
-grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./workplace/lcov.info
-genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./workplace/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
-rustup default stable
+grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o workplace/lcov.info
+genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend workplace/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
 # coveralls format
 #grcov . --binary-path ./target/debug/ -t coveralls -s . --token YOUR_COVERALLS_TOKEN > coveralls.json
+#rustc版本还原
+rustup default stable
 unset RUSTFLAGS RUSTDOCFLAGS
 echo -e "\n\n\n"
 
@@ -613,7 +617,8 @@ echo -e "-----------------------------------------------------------------------
 
 echo -e "-----------------------------------------------------------------------------\n"
 echo -e "sanitizer快速内存错误检测器:sanitizer_use_of_uninitialized_value\n"
-cat workplace/cargo-sanitizer_use_of_uninitialized_value.txt
+cat -n workplace/cargo-sanitizer_use_of_uninitialized_value.txt | grep "use-of-uninitialized-value" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer_use_of_uninitialized_value.txt"; system(cmd)}'
+#cat workplace/cargo-sanitizer_use_of_uninitialized_value.txt
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 echo -e "-----------------------------------------------------------------------------\n"
@@ -678,6 +683,18 @@ echo -e "-----------------------------------------------------------------------
 # rust-semverver
 echo -e "-----------------------------------------------------------------------------\n"
 echo -e "rust-semverver:\n"
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# cargo-deadlinks
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "cargo-deadlinks:检查损坏的链接\n"
+cat workplace/cargo-deadlinks.txt
+echo -e "-----------------------------------------------------------------------------\n\n\n"
+
+# cargo-build
+echo -e "-----------------------------------------------------------------------------\n"
+echo -e "cargo-build:构建结果查看\n"
+cat workplace/cargo-build.txt
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 echo -e "#####################################结果展示 end#####################################\n\n\n"
