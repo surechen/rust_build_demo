@@ -167,21 +167,21 @@ cargo build
 echo -e "\n\n\n"
 
 echo -e "sanitizer快速内存错误检测器，能够检测unsafe部分\n"
-export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 # 编译并执行
 # AddressSanitizer
 # HWAddressSanitizer
+export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 sanitizer_stack_buffer_overflow_before="//sanitizer_stack_buffer_overflow();"
 sanitizer_stack_buffer_overflow_check="sanitizer_stack_buffer_overflow();"
 sed -i "s:${sanitizer_stack_buffer_overflow_before}:${sanitizer_stack_buffer_overflow_check}:" src/main.rs
-cargo +nightly run  > workplace/cargo-sanitizer_stack_buffer_overflow.txt 2>&1 || true
+cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer_stack_buffer_overflow.txt 2>&1 || true
 sed -i "s:${sanitizer_stack_buffer_overflow_check}:${sanitizer_stack_buffer_overflow_before}:" src/main.rs
 
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 sanitizer_stack_use_after_scope_before="//sanitizer_stack_use_after_scope();"
 sanitizer_stack_use_after_scope_check="sanitizer_stack_use_after_scope();"
 sed -i "s:${sanitizer_stack_use_after_scope_before}:${sanitizer_stack_use_after_scope_check}:" src/main.rs
-cargo +nightly run  > workplace/cargo-sanitizer_stack_use_after_scope.txt 2>&1 || true
+cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer_stack_use_after_scope.txt 2>&1 || true
 sed -i "s:${sanitizer_stack_use_after_scope_check}:${sanitizer_stack_use_after_scope_before}:" src/main.rs
 
 # LeakSanitizer待补充
