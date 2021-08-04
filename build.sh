@@ -185,6 +185,9 @@ cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer
 sed -i "s:${sanitizer_stack_use_after_scope_check}:${sanitizer_stack_use_after_scope_before}:" src/main.rs
 
 # LeakSanitizer待补充
+export RUSTFLAGS='-Zsanitizer=leak'
+export RUSTDOCFLAGS='-Zsanitizer=leak'
+
 
 # MemorySanitizer
 export RUSTFLAGS='-Zsanitizer=memory -Zsanitizer-memory-track-origins'
@@ -192,7 +195,7 @@ export RUSTDOCFLAGS='-Zsanitizer=memory -Zsanitizer-memory-track-origins'
 sanitizer_use_of_uninitialized_value_before="//sanitizer_use_of_uninitialized_value();"
 sanitizer_use_of_uninitialized_value_check="sanitizer_use_of_uninitialized_value();"
 sed -i "s:${sanitizer_use_of_uninitialized_value_before}:${sanitizer_use_of_uninitialized_value_check}:" src/main.rs
-cargo +nightly run  > workplace/cargo-sanitizer_use_of_uninitialized_value.txt 2>&1 || true
+cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer_use_of_uninitialized_value.txt 2>&1 || true
 sed -i "s:${sanitizer_use_of_uninitialized_value_check}:${sanitizer_use_of_uninitialized_value_before}:" src/main.rs
 
 # ThreadSanitizer
