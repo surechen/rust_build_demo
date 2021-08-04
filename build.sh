@@ -258,7 +258,8 @@ echo -e "grcov:  代码覆盖率\n"
 unset RUSTFLAGS RUSTDOCFLAGS
 export RUSTFLAGS="-Zinstrument-coverage"
 rustup default nightly
-cargo build > /dev/null 2>&1
+cargo build -q > /dev/null 2>&1
+cargo test > /dev/null 2>&1
 #cargo build
 #export LLVM_PROFILE_FILE="your_name-%p-%m.profraw"
 #cargo test
@@ -273,6 +274,7 @@ cargo build > /dev/null 2>&1
 # the report in target/debug/coverage/index.html
 # for lcov
 # apt-get install lcov
+rm workplace/lcov.info
 grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o workplace/lcov.info
 genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend workplace/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
 # coveralls format
