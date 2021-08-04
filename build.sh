@@ -441,7 +441,7 @@ echo -e "-----------------------------------------------------------------------
 # 程序画像结果
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 echo -e "cargo-profiler：函数调用统计\n"
-cat workplace/cargo-profiler-callgrind.txt
+bash ./show.sh workplace/cargo-profiler-callgrind.txt
 echo -e "cargo-profiler：cpu cache信息统计\n"
 cat workplace/cargo-profiler-cachegrind.txt
 echo -e "-----------------------------------------------------------------------------\n"
