@@ -267,8 +267,8 @@ rustup default nightly
 # the report in target/debug/coverage/index.html
 # for lcov
 # apt-get install lcov
-grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/coverage/lcov.info
-genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./target/debug/coverage/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
+grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./workplace/lcov.info
+genhtml -o ./target/debug/coverage/ --show-details --highlight --ignore-errors source --legend ./workplace/lcov.info > workplace/cargo-grcov.txt 2>&1 || true
 rustup default stable
 # coveralls format
 #grcov . --binary-path ./target/debug/ -t coveralls -s . --token YOUR_COVERALLS_TOKEN > coveralls.json
