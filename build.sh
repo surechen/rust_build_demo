@@ -67,6 +67,12 @@ echo -e "\n\n\n"
 echo -e "cargo-license:  license信息展示\n"
 cargo install cargo-license
 cargo license > workplace/cargo-license.txt 2>&1
+
+echo -e "cargo-outdated:  cargo 依赖的crates是否有新版本\n"
+cargo install cargo-outdated || true
+cargo outdated > workplace/cargo-outdated.txt 2>&1 || true
+echo -e "\n\n\n"
+
 echo -e "####################################依赖检查 end####################################\n\n\n"
 echo -e "\n\n\n"
 
@@ -115,11 +121,6 @@ echo -e "\n\n\n"
 echo -e "cargo-llvm-lines:  计算泛型函数所有实例化中LLVM IR的行数\n"
 cargo install cargo-llvm-lines
 cargo llvm-lines --bin rust_build_demo1 > workplace/cargo-llvm-lines.txt 2>&1 || true
-echo -e "\n\n\n"
-
-echo -e "cargo-outdated:  cargo 依赖的crates是否有新版本\n"
-cargo install cargo-outdated || true
-cargo outdated > workplace/cargo-outdated.txt 2>&1 || true
 echo -e "\n\n\n"
 
 echo -e "cargo-deadlinks:  cargo doc中损坏的链接检查\n"
