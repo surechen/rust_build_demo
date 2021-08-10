@@ -110,19 +110,6 @@ cargo install --git https://github.com/hhatto/cargo-strict.git || true
 cargo strict > workplace/cargo-strict.txt 2>&1 || true
 echo -e "\n\n\n"
 
-echo -e "cargo-bloat:  检查crate或function占用可执行文件空间百分比\n"
-cargo install cargo-bloat
-# 检查各个crate在可执行文件的空间占用百分比
-cargo bloat --release --crates > workplace/cargo-bloat-crates.txt 2>&1 || true
-# 检查各个函数在可执行文件的空间占用百分比
-cargo bloat --release -n 30 > workplace/cargo-bloat-func.txt 2>&1 || true
-echo -e "\n\n\n"
-
-echo -e "cargo-llvm-lines:  计算泛型函数所有实例化中LLVM IR的行数\n"
-cargo install cargo-llvm-lines
-cargo llvm-lines --bin rust_build_demo1 > workplace/cargo-llvm-lines.txt 2>&1 || true
-echo -e "\n\n\n"
-
 echo -e "cargo-deadlinks:  cargo doc中损坏的链接检查\n"
 cargo install cargo-deadlinks
 cargo deadlinks > workplace/cargo-deadlinks.txt 2>&1 || true
@@ -336,6 +323,19 @@ echo -e "####################################测试 end#########################
 echo -e "################################辅助开发和运维工具################################\n\n\n"
 # 自动应用rustc建议的错误修复方式
 #cargo fix
+
+echo -e "cargo-bloat:  检查crate或function占用可执行文件空间百分比\n"
+cargo install cargo-bloat
+# 检查各个crate在可执行文件的空间占用百分比
+cargo bloat --release --crates > workplace/cargo-bloat-crates.txt 2>&1 || true
+# 检查各个函数在可执行文件的空间占用百分比
+cargo bloat --release -n 30 > workplace/cargo-bloat-func.txt 2>&1 || true
+echo -e "\n\n\n"
+
+echo -e "cargo-llvm-lines:  计算泛型函数所有实例化中LLVM IR的行数\n"
+cargo install cargo-llvm-lines
+cargo llvm-lines --bin rust_build_demo1 > workplace/cargo-llvm-lines.txt 2>&1 || true
+echo -e "\n\n\n"
 
 # 运行miri检测
 rustup +nightly component add miri
