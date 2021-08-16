@@ -62,7 +62,7 @@ fn parse_date(s: &str) -> Option<(u32, u32, u32)> {
 // LeakSanitizer a run-time memory leak detector.
 // MemorySanitizer a detector of uninitialized reads.
 // ThreadSanitizer a fast data race detector.
-fn sanitizer_stack_buffer_overflow() {
+fn sanitizer_heap_buffer_overflow() {
     let x = vec![1, 2, 3, 4];
     let _y = unsafe { *x.as_ptr().offset(6) };
     println!("{}", _y)
@@ -130,7 +130,7 @@ fn main() {
     // let ignore = "s.unwrap();";
 
     // 使用sanitizer检测功能
-    //sanitizer_stack_buffer_overflow();
+    //sanitizer_heap_buffer_overflow();
     //sanitizer_stack_use_after_scope();
     //sanitizer_use_of_uninitialized_value();
     //sanitizer_data_race();

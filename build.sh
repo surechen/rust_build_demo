@@ -67,6 +67,12 @@ echo -e "\n\n\n"
 echo -e "cargo-license:  license信息展示\n"
 cargo install cargo-license
 cargo license > workplace/cargo-license.txt 2>&1
+
+echo -e "cargo-outdated:  cargo 依赖的crates是否有新版本\n"
+cargo install cargo-outdated || true
+cargo outdated > workplace/cargo-outdated.txt 2>&1 || true
+echo -e "\n\n\n"
+
 echo -e "####################################依赖检查 end####################################\n\n\n"
 echo -e "\n\n\n"
 
@@ -102,24 +108,6 @@ echo -e "\n\n\n"
 echo -e "cargo-strict:  检查unwrap函数\n"
 cargo install --git https://github.com/hhatto/cargo-strict.git || true
 cargo strict > workplace/cargo-strict.txt 2>&1 || true
-echo -e "\n\n\n"
-
-echo -e "cargo-bloat:  检查crate或function占用可执行文件空间百分比\n"
-cargo install cargo-bloat
-# 检查各个crate在可执行文件的空间占用百分比
-cargo bloat --release --crates > workplace/cargo-bloat-crates.txt 2>&1 || true
-# 检查各个函数在可执行文件的空间占用百分比
-cargo bloat --release -n 30 > workplace/cargo-bloat-func.txt 2>&1 || true
-echo -e "\n\n\n"
-
-echo -e "cargo-llvm-lines:  计算泛型函数所有实例化中LLVM IR的行数\n"
-cargo install cargo-llvm-lines
-cargo llvm-lines --bin rust_build_demo1 > workplace/cargo-llvm-lines.txt 2>&1 || true
-echo -e "\n\n\n"
-
-echo -e "cargo-outdated:  cargo 依赖的crates是否有新版本\n"
-cargo install cargo-outdated || true
-cargo outdated > workplace/cargo-outdated.txt 2>&1 || true
 echo -e "\n\n\n"
 
 echo -e "cargo-deadlinks:  cargo doc中损坏的链接检查\n"
@@ -158,11 +146,11 @@ echo -e "sanitizer快速内存错误检测器，能够检测unsafe部分\n"
 # AddressSanitizer
 # HWAddressSanitizer
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
-sanitizer_stack_buffer_overflow_before="//sanitizer_stack_buffer_overflow();"
-sanitizer_stack_buffer_overflow_check="sanitizer_stack_buffer_overflow();"
-sed -i "s:${sanitizer_stack_buffer_overflow_before}:${sanitizer_stack_buffer_overflow_check}:" src/main.rs
-cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer_stack_buffer_overflow.txt 2>&1 || true
-sed -i "s:${sanitizer_stack_buffer_overflow_check}:${sanitizer_stack_buffer_overflow_before}:" src/main.rs
+sanitizer_heap_buffer_overflow_before="//sanitizer_heap_buffer_overflow();"
+sanitizer_heap_buffer_overflow_check="sanitizer_heap_buffer_overflow();"
+sed -i "s:${sanitizer_heap_buffer_overflow_before}:${sanitizer_heap_buffer_overflow_check}:" src/main.rs
+cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer_heap_buffer_overflow.txt 2>&1 || true
+sed -i "s:${sanitizer_heap_buffer_overflow_check}:${sanitizer_heap_buffer_overflow_before}:" src/main.rs
 
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 sanitizer_stack_use_after_scope_before="//sanitizer_stack_use_after_scope();"
@@ -335,6 +323,19 @@ echo -e "####################################测试 end#########################
 echo -e "################################辅助开发和运维工具################################\n\n\n"
 # 自动应用rustc建议的错误修复方式
 #cargo fix
+
+echo -e "cargo-bloat:  检查crate或function占用可执行文件空间百分比\n"
+cargo install cargo-bloat
+# 检查各个crate在可执行文件的空间占用百分比
+cargo bloat --release --crates > workplace/cargo-bloat-crates.txt 2>&1 || true
+# 检查各个函数在可执行文件的空间占用百分比
+cargo bloat --release -n 30 > workplace/cargo-bloat-func.txt 2>&1 || true
+echo -e "\n\n\n"
+
+echo -e "cargo-llvm-lines:  计算泛型函数所有实例化中LLVM IR的行数\n"
+cargo install cargo-llvm-lines
+cargo llvm-lines --bin rust_build_demo1 > workplace/cargo-llvm-lines.txt 2>&1 || true
+echo -e "\n\n\n"
 
 # 运行miri检测
 rustup +nightly component add miri
@@ -609,7 +610,7 @@ echo -e "-----------------------------------------------------------------------
 # sanitizer
 echo -e "-----------------------------------------------------------------------------\n"
 echo -e "sanitizer快速内存错误检测器:stack_buffer_overflow\n"
-cat -n workplace/cargo-sanitizer_stack_buffer_overflow.txt | grep "============================" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer_stack_buffer_overflow.txt"; system(cmd)}'
+cat -n workplace/cargo-sanitizer_heap_buffer_overflow.txt | grep "============================" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer_heap_buffer_overflow.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 echo -e "-----------------------------------------------------------------------------\n"
