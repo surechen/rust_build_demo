@@ -146,11 +146,11 @@ echo -e "sanitizer快速内存错误检测器，能够检测unsafe部分\n"
 # AddressSanitizer
 # HWAddressSanitizer
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
-sanitizer_stack_buffer_overflow_before="//sanitizer_stack_buffer_overflow();"
-sanitizer_stack_buffer_overflow_check="sanitizer_stack_buffer_overflow();"
-sed -i "s:${sanitizer_stack_buffer_overflow_before}:${sanitizer_stack_buffer_overflow_check}:" src/main.rs
-cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer_stack_buffer_overflow.txt 2>&1 || true
-sed -i "s:${sanitizer_stack_buffer_overflow_check}:${sanitizer_stack_buffer_overflow_before}:" src/main.rs
+sanitizer_heap_buffer_overflow_before="//sanitizer_heap_buffer_overflow();"
+sanitizer_heap_buffer_overflow_check="sanitizer_heap_buffer_overflow();"
+sed -i "s:${sanitizer_heap_buffer_overflow_before}:${sanitizer_heap_buffer_overflow_check}:" src/main.rs
+cargo +nightly run --target x86_64-unknown-linux-gnu > workplace/cargo-sanitizer_heap_buffer_overflow.txt 2>&1 || true
+sed -i "s:${sanitizer_heap_buffer_overflow_check}:${sanitizer_heap_buffer_overflow_before}:" src/main.rs
 
 export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
 sanitizer_stack_use_after_scope_before="//sanitizer_stack_use_after_scope();"
@@ -610,7 +610,7 @@ echo -e "-----------------------------------------------------------------------
 # sanitizer
 echo -e "-----------------------------------------------------------------------------\n"
 echo -e "sanitizer快速内存错误检测器:stack_buffer_overflow\n"
-cat -n workplace/cargo-sanitizer_stack_buffer_overflow.txt | grep "============================" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer_stack_buffer_overflow.txt"; system(cmd)}'
+cat -n workplace/cargo-sanitizer_heap_buffer_overflow.txt | grep "============================" | awk '{cmd= "awk \047NR>="$1"\047 workplace/cargo-sanitizer_heap_buffer_overflow.txt"; system(cmd)}'
 echo -e "-----------------------------------------------------------------------------\n\n\n"
 
 echo -e "-----------------------------------------------------------------------------\n"
